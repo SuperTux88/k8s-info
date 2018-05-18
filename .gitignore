@@ -1,0 +1,11 @@
+# IDE
+.idea
+
+# python
+.venv
+*.pyc
+
+# nodejs
+node_modules
+app/static/js/bundle.js
+npm-debug.log
