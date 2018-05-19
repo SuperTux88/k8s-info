@@ -10,14 +10,22 @@ const config = {
     extensions: ['.js', '.jsx']
   },
   module: {
-  rules: [
-    {
-      test: /\.jsx?/,
-      exclude: /node_modules/,
-      use: 'babel-loader'
-    }
-  ]
-}
+    rules: [
+      {
+        test: /\.jsx?/,
+        exclude: /node_modules/,
+        use: 'babel-loader'
+      },
+      {
+        test: /\.css$/,
+        use: [ 'style-loader', 'css-loader' ]
+      },
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        use: 'url-loader?limit=100000'
+      }
+    ]
+  }
 };
 
 module.exports = config;
