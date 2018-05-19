@@ -1,3 +1,5 @@
 Flask
 Flask-Cors
 gunicorn
+
+kubernetes
