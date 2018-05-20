@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import { withRouter } from 'react-router';
 
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -18,16 +18,17 @@ const styles = theme => ({
   },
 });
 
-const mapStateToProps = state => ({
-  contexts: state.contexts
+const mapStateToProps = (state, { match }) => ({
+  contexts: state.contexts,
+  currentContext: match.params.context,
 });
 
-const ContextDropdown = ({ classes, match, contexts }) => {
+const ContextDropdown = ({ classes, currentContext, contexts }) => {
   return (
     <FormControl className={classes.formControl}>
       <InputLabel htmlFor="context-dropdown">Context</InputLabel>
       <Select
-        value={match.params.context}
+        value={currentContext}
         inputProps={{
           name: 'context',
           id: 'context-dropdown',
@@ -38,7 +39,7 @@ const ContextDropdown = ({ classes, match, contexts }) => {
             {context}
           </MenuItem>
         ))}
-        {contexts.loading && <MenuItem value={match.params.context}>{match.params.context}</MenuItem>}
+        {contexts.loading && <MenuItem value={currentContext}>{currentContext}</MenuItem>}
         {contexts.loading && <MenuItem><CircularProgress /></MenuItem>}
         {contexts.error && <MenuItem>Error!</MenuItem>}
       </Select>
@@ -46,4 +47,4 @@ const ContextDropdown = ({ classes, match, contexts }) => {
   );
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(ContextDropdown));
+export default withRouter(connect(mapStateToProps)(withStyles(styles)(ContextDropdown)));

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -10,11 +11,9 @@ import ContextIcon from '@material-ui/icons/Storage';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import { Link } from 'react-router-dom';
-
 import K8sLogoHeader from '../components/K8sLogoHeader';
-import Error from '../components/Error';
 import Loading from '../components/Loading';
+import Error from '../components/Error';
 
 const styles = {
   root: {
