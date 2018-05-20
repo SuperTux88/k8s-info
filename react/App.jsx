@@ -20,7 +20,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div>
-          <Route path="/:context/:namespace?/:pod?/:container?" component={AppToolbar} />
+          <Route path="/:context/:namespace?/:pod?/:container?/:page?" component={AppToolbar} />
           <Route exact path="/" component={Index} />
           <Route exact path="/:context/:namespace?" component={PodList} />
         </div>
