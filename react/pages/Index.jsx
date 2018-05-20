@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-
-import axios from 'axios';
+import React from 'react';
+import { connect } from 'react-redux';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
@@ -10,6 +9,8 @@ import Avatar from '@material-ui/core/Avatar';
 import ContextIcon from '@material-ui/icons/Storage';
 
 import { withStyles } from '@material-ui/core/styles';
+
+import { Link } from 'react-router-dom';
 
 import K8sLogoHeader from '../components/K8sLogoHeader';
 import Error from '../components/Error';
@@ -24,68 +25,42 @@ const styles = {
   },
 };
 
-class Index extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: null,
-      isLoaded: false,
-      contexts: []
-    };
-  }
+const mapStateToProps = state => ({
+  contexts: state.contexts
+});
 
-  componentDidMount() {
-    axios.get("/api/contexts")
-      .then(res => {
-        this.setState({
-          isLoaded: true,
-          contexts: res.data.contexts
-        });
-      })
-      .catch(error => {
-        this.setState({
-          isLoaded: true,
-          error
-        });
-      })
-  }
-
-  render() {
-    const { classes } = this.props;
-    const { error, isLoaded, contexts } = this.state;
-
-    if (error) {
-      return (
-        <div>
-          <K8sLogoHeader />
-          <Error message={error.message} />
+const Index = ({ classes, contexts }) => {
+  if (contexts.loading) {
+    return (
+      <div>
+        <K8sLogoHeader/>
+        <Loading/>
+      </div>
+    );
+  } else if (contexts.error) {
+    return (
+      <div>
+        <K8sLogoHeader/>
+        <Error message={contexts.error.message}/>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <K8sLogoHeader/>
+        <div className={classes.root}>
+          <List subheader={<ListSubheader>Context</ListSubheader>}>
+            {contexts.items.map(context => (
+              <ListItem button component={Link} to={"/" + context} key={context}>
+                <Avatar><ContextIcon/></Avatar>
+                <ListItemText primary={context}/>
+              </ListItem>
+            ))}
+          </List>
         </div>
-      );
-    } else if (!isLoaded) {
-      return (
-        <div>
-          <K8sLogoHeader />
-          <Loading />
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <K8sLogoHeader />
-          <div className={classes.root}>
-            <List subheader={<ListSubheader>Context</ListSubheader>}>
-              {contexts.map(context => (
-                <ListItem key={context}>
-                  <Avatar><ContextIcon /></Avatar>
-                  <ListItemText primary={context} />
-                </ListItem>
-              ))}
-            </List>
-          </div>
-        </div>
-      );
-    }
+      </div>
+    );
   }
-}
+};
 
-export default withStyles(styles)(Index);
+export default connect(mapStateToProps)(withStyles(styles)(Index));

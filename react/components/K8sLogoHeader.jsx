@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -15,16 +15,11 @@ const styles = {
   },
 };
 
-class K8sLogoHeader extends Component {
-  render() {
-    const { classes } = this.props;
 
-    return (
-      <div className={classes.header}>
-        <img src="/static/images/favicon.png" className={classes.logo} alt="k8s-logo" />
-      </div>
-    );
-  }
-}
+const K8sLogoHeader = ({ classes }) => (
+  <div className={classes.header}>
+    <img src="/static/images/favicon.png" className={classes.logo} alt="k8s-logo" />
+  </div>
+);
 
 export default withStyles(styles)(K8sLogoHeader);
