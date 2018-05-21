@@ -47,7 +47,7 @@ def pods(context):
                     'name': c.name,
                     'ready': c.ready,
                     'restart_count': c.restart_count
-                }, p.status.container_statuses))
+                }, p.status.container_statuses or []))
             }
         })
     return jsonify(pods)
@@ -102,7 +102,7 @@ def describe(context, namespace, pod):
                     'name': c.name,
                     'ready': c.ready,
                     'restart_count': c.restart_count
-                }, pod_ret.status.container_statuses)),
+                }, pod_ret.status.container_statuses or [])),
                 'host_ip': pod_ret.status.host_ip,
                 'pod_ip': pod_ret.status.pod_ip,
                 'qos_class': pod_ret.status.qos_class
