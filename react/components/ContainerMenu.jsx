@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
@@ -46,17 +45,15 @@ class ContainerMenu extends Component {
 
     return (
       <div>
-        <Tooltip title="Container-Info" placement="top">
-          <IconButton
-            className={classes.root}
-            aria-label="Container-Info"
-            aria-owns={anchorEl ? menuId : null}
-            aria-haspopup="true"
-            onClick={this.handleClick}
-          >
-            <MoreVertIcon className={classes.icon}/>
-          </IconButton>
-        </Tooltip>
+        <IconButton
+          className={classes.root}
+          aria-label="Container-Info"
+          aria-owns={anchorEl ? menuId : null}
+          aria-haspopup="true"
+          onClick={this.handleClick}
+        >
+          <MoreVertIcon className={classes.icon}/>
+        </IconButton>
         <Menu
           id={menuId}
           anchorEl={anchorEl}

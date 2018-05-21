@@ -9,7 +9,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
-import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 
 import InfoIcon from '@material-ui/icons/Info';
@@ -113,20 +112,16 @@ class PodList extends Component {
                       {restarts}
                     </TableCell>
                     <TableCell numeric>
-                      <Tooltip title={pod.metadata.creation_timestamp} placement="top">
-                        <span>{pod.metadata.age}</span>
-                      </Tooltip>
+                      <span>{pod.metadata.age}</span>
                     </TableCell>
                     <TableCell>
-                      <Tooltip title="Describe" placement="top">
-                        <IconButton
-                          className={classes.describeButton}
-                          component={Link}
-                          to={"/" + currentContext + "/" + namespace + "/" + podName}
-                        >
-                          <InfoIcon className={classes.describeIcon}/>
-                        </IconButton>
-                      </Tooltip>
+                      <IconButton
+                        className={classes.describeButton}
+                        component={Link}
+                        to={"/" + currentContext + "/" + namespace + "/" + podName}
+                      >
+                        <InfoIcon className={classes.describeIcon}/>
+                      </IconButton>
                     </TableCell>
                     <TableCell>
                       {containers.map(container => {
