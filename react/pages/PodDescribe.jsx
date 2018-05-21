@@ -97,7 +97,7 @@ class PodDescribe extends Component {
                 </Table>
               </DescribeInfoRow>}
               {spec.tolerations && <DescribeInfoRow title="Tolerations">{spec.tolerations.map(toleration => (
-                <div key={toleration.key}>{toleration.key}:{toleration.effect} for {toleration.toleration_seconds}s</div>
+                <div key={toleration.key + ":" + toleration.effect}>{toleration.key}:{toleration.effect}{toleration.toleration_seconds && " for " + toleration.toleration_seconds + "s"}</div>
               ))}</DescribeInfoRow>}
               <DescribeInfoRow title="Labels">
                 <Table className={classes.nestedTable}>

@@ -8,7 +8,6 @@ import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
 import IconButton from '@material-ui/core/IconButton';
 
 import InfoIcon from '@material-ui/icons/Info';
@@ -22,6 +21,7 @@ import red from '@material-ui/core/colors/red';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import ContainerMenu from '../components/ContainerMenu';
+import CompactTableCell from '../components/CompactTableCell';
 
 const styles = theme => ({
   root: {
@@ -78,14 +78,14 @@ class PodList extends Component {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Namespace</TableCell>
-                <TableCell>Pod Name</TableCell>
-                <TableCell>Ready</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell numeric>Restarts</TableCell>
-                <TableCell numeric>Age</TableCell>
-                <TableCell>Describe</TableCell>
-                <TableCell>Containers</TableCell>
+                <CompactTableCell>Namespace</CompactTableCell>
+                <CompactTableCell>Pod Name</CompactTableCell>
+                <CompactTableCell>Ready</CompactTableCell>
+                <CompactTableCell>Status</CompactTableCell>
+                <CompactTableCell numeric>Restarts</CompactTableCell>
+                <CompactTableCell numeric>Age</CompactTableCell>
+                <CompactTableCell>Describe</CompactTableCell>
+                <CompactTableCell>Containers</CompactTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -102,19 +102,19 @@ class PodList extends Component {
 
                 return (
                   <TableRow className={classes.row} key={podName}>
-                    <TableCell>{namespace}</TableCell>
-                    <TableCell>{podName}</TableCell>
-                    <TableCell style={(readyCount === containerCount) ? {color: green[500]} : {}}>
+                    <CompactTableCell>{namespace}</CompactTableCell>
+                    <CompactTableCell>{podName}</CompactTableCell>
+                    <CompactTableCell style={(readyCount === containerCount) ? {color: green[500]} : {}}>
                       {readyCount}/{containerCount}
-                    </TableCell>
-                    <TableCell>{pod.status.phase}</TableCell>
-                    <TableCell numeric style={(restarts === 0) ? {color: green[500]} : {color: red[500]}}>
+                    </CompactTableCell>
+                    <CompactTableCell>{pod.status.phase}</CompactTableCell>
+                    <CompactTableCell numeric style={(restarts === 0) ? {color: green[500]} : {color: red[500]}}>
                       {restarts}
-                    </TableCell>
-                    <TableCell numeric>
+                    </CompactTableCell>
+                    <CompactTableCell numeric>
                       <span>{pod.metadata.age}</span>
-                    </TableCell>
-                    <TableCell>
+                    </CompactTableCell>
+                    <CompactTableCell>
                       <IconButton
                         className={classes.describeButton}
                         component={Link}
@@ -122,8 +122,8 @@ class PodList extends Component {
                       >
                         <InfoIcon className={classes.describeIcon}/>
                       </IconButton>
-                    </TableCell>
-                    <TableCell>
+                    </CompactTableCell>
+                    <CompactTableCell>
                       {containers.map(container => {
                         return (
                           <div className={classes.containerInfo} key={container.name}>
@@ -132,7 +132,7 @@ class PodList extends Component {
                           </div>
                         );
                       })}
-                    </TableCell>
+                    </CompactTableCell>
                   </TableRow>
                 );
               })}
