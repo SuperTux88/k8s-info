@@ -10,6 +10,7 @@ import AppToolbar from './components/AppToolbar';
 
 import Index from './pages/Index';
 import PodList from './pages/PodList';
+import ContainerInfo from './pages/ContainerInfo';
 
 class App extends Component {
   componentDidMount() {
@@ -23,6 +24,7 @@ class App extends Component {
           <Route path="/:context/:namespace?/:pod?/:container?/:page?" component={AppToolbar} />
           <Route exact path="/" component={Index} />
           <Route exact path="/:context/:namespace?" component={PodList} />
+          <Route exact path="/:context/:namespace/:pod/:container/:page" component={ContainerInfo} />
         </div>
       </BrowserRouter>
     );

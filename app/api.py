@@ -16,6 +16,12 @@ def handle_api_exception(e):
     return Response(str(e), mimetype='text/plain'), 400
 
 
+@api.route('/', defaults={'_path': ''})
+@api.route('/<path:_path>')
+def catch_all(_path):
+    return jsonify({'message': 'Not found!'}), 404
+
+
 @api.route('/contexts')
 def get_contexts():
     contexts = config.list_kube_config_contexts()[0]
