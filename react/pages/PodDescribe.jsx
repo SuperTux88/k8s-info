@@ -7,6 +7,12 @@ import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { withStyles } from '@material-ui/core/styles';
 import { darken } from '@material-ui/core/styles/colorManipulator';
@@ -40,6 +46,21 @@ const styles = theme => ({
       backgroundColor: darken(theme.palette.background.paper, 0.1),
     },
     height: '32px',
+  },
+  expansionPanel: {
+    display: 'table-cell',
+  },
+  expansionPanelSummary: {
+    minHeight: (theme.spacing.unit * 4) + "px !important",
+    backgroundColor: darken(theme.palette.background.paper, 0.1),
+  },
+  expansionPanelSummaryContent: {
+    margin: theme.spacing.unit * -1.5,
+    marginTop: theme.spacing.unit * -1.25,
+    marginRight: theme.spacing.unit * 2,
+  },
+  expansionPanelDetails: {
+    padding: theme.spacing.unit * 2,
   },
 });
 
@@ -124,6 +145,27 @@ class PodDescribe extends Component {
                 </Table>
               </DescribeInfoRow>
               <DescribeInfoRow title="Containers">TODO!</DescribeInfoRow>
+              <DescribeInfoRow title="Volumes">
+                {spec.volumes.map(volume => {
+                  const type = Object.keys(volume).find(key => key !== 'name' && volume[key]);
+
+                  return (
+                    <ExpansionPanel className={classes.expansionPanel} key={volume.name}>
+                      <ExpansionPanelSummary className={classes.expansionPanelSummary} expandIcon={<ExpandMoreIcon />}>
+                        <Typography className={classes.expansionPanelSummaryContent}>{volume.name}</Typography>
+                      </ExpansionPanelSummary>
+                      <ExpansionPanelDetails className={classes.expansionPanelDetails}>
+                        <Table className={classes.nestedTable}>
+                          <TableBody>
+                            <DescribeInfoRow title="Type">{type}</DescribeInfoRow>
+                            <DescribeInfoRow title="Optional">{volume[type].optional ? "True" : "False"}</DescribeInfoRow>
+                          </TableBody>
+                        </Table>
+                      </ExpansionPanelDetails>
+                    </ExpansionPanel>
+                  )
+                })}
+              </DescribeInfoRow>
               <DescribeInfoRow title="Conditions">
                 <Table className={classes.nestedTable}>
                   <TableHead>
@@ -142,7 +184,6 @@ class PodDescribe extends Component {
                   </TableBody>
                 </Table>
               </DescribeInfoRow>
-              <DescribeInfoRow title="Volumes">TODO!</DescribeInfoRow>
               <DescribeInfoRow title="Events">
                 {pod.pod.events.length == 0 && "None"}
                 {pod.pod.events.length > 0 && <Table className={classes.nestedTable}>
