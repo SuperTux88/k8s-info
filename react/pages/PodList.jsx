@@ -20,8 +20,6 @@ import { darken } from '@material-ui/core/styles/colorManipulator';
 import green from '@material-ui/core/colors/green';
 import red from '@material-ui/core/colors/red';
 
-import { fetchPods } from '../actions/pods';
-
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import ContainerMenu from '../components/ContainerMenu';
@@ -56,21 +54,12 @@ const styles = theme => ({
 const mapStateToProps = (state, { match }) => ({
   pods: state.pods,
   currentContext: match.params.context,
+  currentNamespace: match.params.namespace,
 });
 
 class PodList extends Component {
-  componentDidMount() {
-    this.props.dispatch(fetchPods(this.props.currentContext));
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.currentContext !== prevProps.currentContext) {
-      this.props.dispatch(fetchPods(this.props.currentContext));
-    }
-  }
-
   render() {
-    const { classes, currentContext, pods } = this.props;
+    const { classes, currentContext, currentNamespace, pods } = this.props;
 
     if (pods.loading) {
       return (
@@ -101,7 +90,7 @@ class PodList extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {pods.items.map(pod => {
+              {pods.items.filter(pod => (!currentNamespace || pod.metadata.namespace === currentNamespace)).map(pod => {
                 const namespace = pod.metadata.namespace;
                 const podName = pod.metadata.name;
 
