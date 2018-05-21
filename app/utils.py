@@ -12,3 +12,10 @@ def get_age(ts):
         return "{}h".format(int(seconds/60/60))
 
     return "{}d".format(int(seconds/60/60/24))
+
+
+def safe_to_dict(val):
+    try:
+        return val.to_dict()
+    except AttributeError:
+        return None

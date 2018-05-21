@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, abort, Response
 import json
 from kubernetes import client, config
 from kubernetes.stream import stream
-from utils import get_age
+from utils import get_age, safe_to_dict
 
 api = Blueprint('api', __name__)
 
@@ -55,24 +55,69 @@ def pods(context):
 
 @api.route('/context/<string:context>/namespace/<string:namespace>/pod/<string:pod>/describe')
 def describe(context, namespace, pod):
-    ret = get_client(context).read_namespaced_pod(pod, namespace)
+    api_client = get_client(context)
+    pod_ret = api_client.read_namespaced_pod(pod, namespace)
 
-    # TODO: more info for describe
+    events_ret = api_client.list_namespaced_event(namespace)
+    pod_events = filter(lambda e: (e.involved_object.kind == 'Pod' and e.involved_object.name == pod), events_ret.items)
+
     return jsonify({
             'metadata': {
-                'namespace': ret.metadata.namespace,
-                'name': ret.metadata.name,
-                'creation_timestamp': ret.metadata.creation_timestamp.isoformat(),
-                'age': get_age(ret.metadata.creation_timestamp)
+                'namespace': pod_ret.metadata.namespace,
+                'name': pod_ret.metadata.name,
+                'creation_timestamp': pod_ret.metadata.creation_timestamp.astimezone().isoformat(),
+                'age': get_age(pod_ret.metadata.creation_timestamp),
+                'labels': pod_ret.metadata.labels,
+                'owner_references': list(map(lambda r: {
+                    'kind': r.kind,
+                    'name': r.name
+                }, pod_ret.metadata.owner_references))
+            },
+            'spec': {
+                'node_name': pod_ret.spec.node_name,
+                'containers': list(map(lambda c: {
+                    'resources': c.resources.to_dict(),
+                    'liveness_probe': safe_to_dict(c.liveness_probe),
+                    'readiness_probe': safe_to_dict(c.readiness_probe),
+                    'env': safe_to_dict(c.env),
+                    'volume_mounts': safe_to_dict(c.volume_mounts)
+                }, pod_ret.spec.containers)),
+                'volumes': list(map(lambda v: v.to_dict(), pod_ret.spec.volumes)),
+                'node_selector': pod_ret.spec.node_selector,
+                'tolerations': list(map(lambda v: v.to_dict(), pod_ret.spec.tolerations)) if pod_ret.spec.tolerations else None
             },
             'status': {
-                'phase': ret.status.phase,
+                'conditions': list(map(lambda c: {
+                    'status': c.status,
+                    'type': c.type,
+                    'last_transition_time': c.last_transition_time.astimezone().isoformat()
+                }, pod_ret.status.conditions)),
+                'phase': pod_ret.status.phase,
                 'container_statuses': list(map(lambda c: {
+                    'container_id': c.container_id,
+                    'image': c.image,
+                    'image_id': c.image_id,
+                    'state': c.state.to_dict(),
+                    'last_state': c.last_state.to_dict(),
                     'name': c.name,
                     'ready': c.ready,
                     'restart_count': c.restart_count
-                }, ret.status.container_statuses))
-            }
+                }, pod_ret.status.container_statuses)),
+                'host_ip': pod_ret.status.host_ip,
+                'pod_ip': pod_ret.status.pod_ip,
+                'qos_class': pod_ret.status.qos_class
+            },
+            'events': list(map(lambda e: {
+                'type': e.type,
+                'reason': e.reason,
+                'metadata': {
+                    'name': pod_ret.metadata.name,
+                    'creation_timestamp': e.metadata.creation_timestamp.astimezone().isoformat(),
+                    'age': get_age(e.metadata.creation_timestamp)
+                },
+                'message': e.message,
+                'source': e.source.to_dict()
+            }, pod_events))
         })
 
 
