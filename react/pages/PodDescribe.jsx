@@ -4,27 +4,42 @@ import { withRouter } from 'react-router';
 
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
+import TableRow from '@material-ui/core/TableRow';
 
 import { withStyles } from '@material-ui/core/styles';
+import { darken } from '@material-ui/core/styles/colorManipulator';
 
 import { fetchPodDescribe } from '../actions/pod';
 
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import DescribeInfoRow from '../components/DescribeInfoRow';
+import CompactTableCell from '../components/CompactTableCell';
 
 const styles = theme => ({
   root: {
     margin: theme.spacing.unit * 3,
     padding: theme.spacing.unit * 2,
+    overflow: 'auto',
   },
   table: {
     width: 'auto',
   },
   nestedTable: {
+    width: 'auto',
     marginTop: -theme.spacing.unit/2,
     marginBottom: -theme.spacing.unit/2,
+  },
+  nestedTableTitle: {
+    height: '32px',
+  },
+  nestedTableRow: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: darken(theme.palette.background.paper, 0.1),
+    },
+    height: '32px',
   },
 });
 
@@ -109,9 +124,50 @@ class PodDescribe extends Component {
                 </Table>
               </DescribeInfoRow>
               <DescribeInfoRow title="Containers">TODO!</DescribeInfoRow>
-              <DescribeInfoRow title="Conditions">TODO!</DescribeInfoRow>
+              <DescribeInfoRow title="Conditions">
+                <Table className={classes.nestedTable}>
+                  <TableHead>
+                    <TableRow className={classes.nestedTableTitle}>
+                      <CompactTableCell>Type</CompactTableCell>
+                      <CompactTableCell>Status</CompactTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {status.conditions.map(condition => (
+                      <TableRow className={classes.nestedTableRow} key={condition.type}>
+                        <CompactTableCell>{condition.type}</CompactTableCell>
+                        <CompactTableCell>{condition.status}</CompactTableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </DescribeInfoRow>
               <DescribeInfoRow title="Volumes">TODO!</DescribeInfoRow>
-              <DescribeInfoRow title="Events">TODO!</DescribeInfoRow>
+              <DescribeInfoRow title="Events">
+                {pod.pod.events.length == 0 && "None"}
+                {pod.pod.events.length > 0 && <Table className={classes.nestedTable}>
+                  <TableHead>
+                    <TableRow className={classes.nestedTableTitle}>
+                      <CompactTableCell>Type</CompactTableCell>
+                      <CompactTableCell>Reason</CompactTableCell>
+                      <CompactTableCell numeric>Age</CompactTableCell>
+                      <CompactTableCell>From</CompactTableCell>
+                      <CompactTableCell>Message</CompactTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {pod.pod.events.map(event => (
+                      <TableRow className={classes.nestedTableRow} key={event.reason}>
+                        <CompactTableCell>{event.type}</CompactTableCell>
+                        <CompactTableCell>{event.reason}</CompactTableCell>
+                        <CompactTableCell numeric>{event.metadata.age}</CompactTableCell>
+                        <CompactTableCell>{event.source.component}{event.source.host && ", " + event.source.host}</CompactTableCell>
+                        <CompactTableCell>{event.message}</CompactTableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>}
+              </DescribeInfoRow>
             </TableBody>
           </Table>
         </Paper>

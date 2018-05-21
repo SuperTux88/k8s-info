@@ -13,7 +13,7 @@ const styles = theme => ({
 
 const CompactTableCell = ({ classes, className, children, ...props }) => {
   return (
-    <TableCell {...props} className={[classes.cell, className]}>{children}</TableCell>
+    <TableCell {...props} className={[classes.cell, className].join(' ')}>{children}</TableCell>
   )
 };
 
