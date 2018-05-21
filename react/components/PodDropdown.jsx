@@ -6,8 +6,10 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { withStyles } from '@material-ui/core/styles';
+import {Link} from "react-router-dom";
 
 const styles = theme => ({
   formControl: {
@@ -25,7 +27,7 @@ const mapStateToProps = (state, { match }) => ({
 
 const PodDropdown = ({ classes, currentContext, currentNamespace, currentPod, pods }) => {
   return (
-    <FormControl className={classes.formControl} disabled>
+    <FormControl className={classes.formControl}>
       <InputLabel htmlFor="pod-dropdown">Pod</InputLabel>
       <Select
         value={currentPod}
@@ -34,7 +36,18 @@ const PodDropdown = ({ classes, currentContext, currentNamespace, currentPod, po
           id: 'pod-dropdown',
         }}
       >
-        <MenuItem value={currentPod}>{currentPod}</MenuItem>
+        {pods.items.filter(pod => pod.metadata.namespace === currentNamespace).map(pod => {
+          const podName = pod.metadata.name;
+
+          return (
+            <MenuItem component={Link} to={"/" + currentContext + "/" + currentNamespace + "/" + podName} value={podName} key={podName}>
+              {podName}
+            </MenuItem>
+          );
+        })}
+        {pods.loading && <MenuItem value={currentPod}>{currentPod}</MenuItem>}
+        {pods.loading && <MenuItem><CircularProgress/></MenuItem>}
+        {pods.error && <MenuItem>Error!</MenuItem>}
       </Select>
     </FormControl>
   );

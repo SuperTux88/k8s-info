@@ -71,7 +71,7 @@ def describe(context, namespace, pod):
                 'owner_references': list(map(lambda r: {
                     'kind': r.kind,
                     'name': r.name
-                }, pod_ret.metadata.owner_references))
+                }, pod_ret.metadata.owner_references)) if pod_ret.metadata.owner_references else None
             },
             'spec': {
                 'node_name': pod_ret.spec.node_name,
