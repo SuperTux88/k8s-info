@@ -1,10 +1,13 @@
 const webpack = require('webpack');
 
 const config = {
-  entry:  __dirname + '/react/index.jsx',
+  entry: {
+    index: __dirname + '/react/index.jsx',
+    fonts: __dirname + '/react/fonts.jsx'
+  },
   output: {
     path: __dirname + '/app/static/js',
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
   },
   resolve: {
     extensions: ['.js', '.jsx']

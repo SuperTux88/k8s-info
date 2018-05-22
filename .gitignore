@@ -8,5 +8,5 @@
 # nodejs
 package-lock.json
 node_modules
-app/static/js/bundle.js
+app/static/js/*.bundle.js
 npm-debug.log
