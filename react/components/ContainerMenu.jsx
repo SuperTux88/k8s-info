@@ -41,7 +41,7 @@ class ContainerMenu extends Component {
     const { classes, context, namespace, pod, container } = this.props;
     const { anchorEl } = this.state;
     const menuId = namespace + "-" + pod + "-" + container + "-menu";
-    const linkPrefix = "/" + context + "/" + namespace + "/" + pod + "/" + container + "/"
+    const linkPrefix = "/" + context + "/" + namespace + "/" + pod + "/" + container + "/";
 
     return (
       <div>

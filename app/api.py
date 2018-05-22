@@ -76,11 +76,13 @@ def describe(context, namespace, pod):
             'spec': {
                 'node_name': pod_ret.spec.node_name,
                 'containers': list(map(lambda c: {
+                    'name': c.name,
                     'resources': c.resources.to_dict(),
                     'liveness_probe': safe_to_dict(c.liveness_probe),
                     'readiness_probe': safe_to_dict(c.readiness_probe),
-                    'env': safe_to_dict(c.env),
-                    'volume_mounts': safe_to_dict(c.volume_mounts)
+                    'env': list(map(lambda e: e.to_dict(), c.env or [])),
+                    'ports': list(map(lambda p: p.to_dict(), c.ports or [])),
+                    'volume_mounts': list(map(lambda v: v.to_dict(), c.volume_mounts or []))
                 }, pod_ret.spec.containers)),
                 'volumes': list(map(lambda v: v.to_dict(), pod_ret.spec.volumes)),
                 'node_selector': pod_ret.spec.node_selector,
@@ -94,12 +96,12 @@ def describe(context, namespace, pod):
                 }, pod_ret.status.conditions)),
                 'phase': pod_ret.status.phase,
                 'container_statuses': list(map(lambda c: {
+                    'name': c.name,
                     'container_id': c.container_id,
                     'image': c.image,
                     'image_id': c.image_id,
                     'state': c.state.to_dict(),
                     'last_state': c.last_state.to_dict(),
-                    'name': c.name,
                     'ready': c.ready,
                     'restart_count': c.restart_count
                 }, pod_ret.status.container_statuses or [])),
