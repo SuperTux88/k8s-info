@@ -7,12 +7,12 @@ import Typography from '@material-ui/core/Typography';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import ContextDropdown from './ContextDropdown';
-import NamespaceDropdown from './NamespaceDropdown';
-import PodDropdown from './PodDropdown';
-import ContainerDropdown from './ContainerDropdown';
-import PageDropdown from './PageDropdown';
-import Refresh from './Refresh';
+import ContextDropdown from './toolbar/ContextDropdown';
+import NamespaceDropdown from './toolbar/NamespaceDropdown';
+import PodDropdown from './toolbar/PodDropdown';
+import ContainerDropdown from './toolbar/ContainerDropdown';
+import PageDropdown from './toolbar/PageDropdown';
+import Refresh from './toolbar/Refresh';
 
 const styles = theme => ({
   root: {
@@ -34,7 +34,7 @@ const styles = theme => ({
 });
 
 const AppToolbar = ({ classes }) => (
-  <AppBar position="static" className={classes.root}>
+  <AppBar position="sticky" className={classes.root}>
     <Toolbar>
       <Link to="/" className={classes.link}>
         <img src="/static/images/favicon.png" className={classes.headerLogo} alt="k8s-logo" />

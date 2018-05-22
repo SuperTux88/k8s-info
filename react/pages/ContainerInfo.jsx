@@ -4,13 +4,17 @@ import { withRouter } from 'react-router';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
 
 import { withStyles } from '@material-ui/core/styles';
+import { darken } from '@material-ui/core/styles/colorManipulator';
 
 import { fetchContainerInfo } from "../actions/containerInfo";
 
 import Loading from '../components/Loading';
 import Error from '../components/Error';
+import DescribeInfoRow from '../components/describe/DescribeInfoRow';
 
 const styles = theme => ({
   root: {
@@ -20,7 +24,13 @@ const styles = theme => ({
   pre: {
     overflow: 'auto',
     fontFamily: ["Roboto Mono", "monospace"],
-  }
+    fontSize: theme.typography.pxToRem(12),
+  },
+  row: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: darken(theme.palette.background.paper, 0.1),
+    },
+  },
 });
 
 const mapStateToProps = (state, { match }) => ({
@@ -55,24 +65,33 @@ class ContainerInfo extends Component {
   render() {
     const { classes, containerInfo } = this.props;
 
-    if (containerInfo.loading) {
-      return (
-        <div>
-          <Loading/>
-        </div>
-      );
-    } else if (containerInfo.error) {
+    if (containerInfo.error) {
       return (
         <div>
           <Error message={containerInfo.error.message}/>
         </div>
       );
+    } else if (containerInfo.loading || !containerInfo.content) {
+      return (
+        <div>
+          <Loading/>
+        </div>
+      );
     } else {
       return (
         <Paper className={classes.root}>
-          <Typography component='pre' className={classes.pre}>
+          {typeof containerInfo.content === 'string' && <Typography component='pre' className={classes.pre}>
             {containerInfo.content}
-          </Typography>
+          </Typography>}
+          {typeof containerInfo.content === 'object' && <Table>
+            <TableBody>
+              {Object.keys(containerInfo.content).map(key => (
+                <DescribeInfoRow title={key} key={key} className={classes.row}>
+                  {containerInfo.content[key]}
+                </DescribeInfoRow>
+              ))}
+            </TableBody>
+          </Table>}
         </Paper>
       );
     }

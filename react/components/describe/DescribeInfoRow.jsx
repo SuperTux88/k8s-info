@@ -5,7 +5,7 @@ import TableCell from '@material-ui/core/TableCell';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import CompactTableCell from '../components/CompactTableCell';
+import CompactTableCell from '../CompactTableCell';
 
 const styles = theme => ({
   row: {
@@ -23,9 +23,9 @@ const styles = theme => ({
   },
 });
 
-const DescribeInfoRow = ({ classes, title, children }) => {
+const DescribeInfoRow = ({ classes, className, title, children }) => {
   return (
-    <TableRow className={classes.row}>
+    <TableRow className={[classes.row, className].join(' ')}>
       <TableCell className={classes.title}>{title}</TableCell>
       <CompactTableCell className={classes.value}>{children}</CompactTableCell>
     </TableRow>

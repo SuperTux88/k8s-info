@@ -5,10 +5,10 @@ import { withRouter } from 'react-router';
 import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import { fetchContexts } from '../actions/contexts'
-import { fetchPods } from '../actions/pods'
-import { fetchPodDescribe } from '../actions/pod'
-import { fetchContainerInfo } from '../actions/containerInfo'
+import { fetchContexts } from '../../actions/contexts'
+import { fetchPods } from '../../actions/pods'
+import { fetchPodDescribe } from '../../actions/pod'
+import { fetchContainerInfo } from '../../actions/containerInfo'
 
 const mapStateToProps = (state, { match }) => ({
   currentContext: match.params.context,

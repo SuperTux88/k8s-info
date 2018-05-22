@@ -141,9 +141,11 @@ def ps(context, namespace, pod, container):
 @api.route('/context/<string:context>/namespace/<string:namespace>/pod/<string:pod>/container/<string:container>/env')
 def env(context, namespace, pod, container):
     ret = stream(get_client(context).connect_get_namespaced_pod_exec, pod, namespace, container=container,
-                 command=['/bin/sh', '-c', 'cat /proc/1/environ | xargs --null --max-args=1'], stdout=True)
+                 command=['printenv'], stdout=True)
 
-    return Response(ret, mimetype='text/plain')
+    sorted_env = dict(e.split("=") for e in sorted(filter(None, ret.strip().split('\n'))))
+
+    return jsonify(sorted_env)
 
 
 def get_client(context):

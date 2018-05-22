@@ -26,8 +26,15 @@ import { fetchPodDescribe } from '../actions/pod';
 
 import Loading from '../components/Loading';
 import Error from '../components/Error';
-import DescribeInfoRow from '../components/DescribeInfoRow';
 import CompactTableCell from '../components/CompactTableCell';
+
+import DescribeInfoRow from '../components/describe/DescribeInfoRow';
+import State from '../components/describe/State';
+import Resources from '../components/describe/Resources';
+import Probe from '../components/describe/Probe';
+import Env from '../components/describe/Env';
+
+import { camelCase, boolean } from '../utils';
 
 const styles = theme => ({
   root: {
@@ -88,22 +95,6 @@ const mapStateToProps = (state, { match }) => ({
   currentNamespace: match.params.namespace,
   currentPod: match.params.pod,
 });
-
-const camelCase = (string) => {
-  return string.replace (/(?:^|[-_])(\w)/g, function (_, c) {
-    return c ? c.toUpperCase () : '';
-  });
-};
-
-const probeToString = (probe) => {
-  if (probe.http_get) {
-    return "http-get " + probe.http_get.scheme.toLowerCase() + "://" + (probe.http_get.host || "") + ":" + probe.http_get.port + probe.http_get.path +
-      " delay=" + probe.initial_delay_seconds + "s timeout=" + probe.timeout_seconds + "s period=" + probe.period_seconds + "s " +
-      "#success=" + probe.success_threshold + " #failure=" + probe.failure_threshold;
-  } else {
-    return "TODO"
-  }
-};
 
 class PodDescribe extends Component {
   fetchContent = () => {
@@ -181,13 +172,10 @@ class PodDescribe extends Component {
               <DescribeInfoRow title="Containers">
                 {spec.containers.map(container => {
                   const linkPrefix = "/" + currentContext + "/" + metadata.namespace + "/" + metadata.name + "/" + container.name + "/";
-
                   const containerStatus = status.container_statuses.find(status => status.name === container.name);
-                  const state = Object.keys(containerStatus.state).find(state => containerStatus.state[state]);
-                  const lastState = Object.keys(containerStatus.last_state).find(state => containerStatus.last_state[state]);
 
                   return (
-                    <ExpansionPanel className={classes.expansionPanel} key={container.name}>
+                    <ExpansionPanel className={classes.expansionPanel} key={container.name} defaultExpanded={spec.containers.length === 1}>
                       <ExpansionPanelSummary className={classes.expansionPanelSummary} expandIcon={<ExpandMoreIcon />}>
                         <div style={{width: '100%'}} className={classes.expansionPanelSummaryContent}>
                           <Typography className={classes.expansionPanelSummaryContentInfo}>{container.name}</Typography>
@@ -218,7 +206,7 @@ class PodDescribe extends Component {
                                   </TableHead>
                                   <TableBody>
                                     {container.ports.map(port => (
-                                      <TableRow className={classes.nestedTableRow} key={port.container_port}>
+                                      <TableRow className={classes.nestedTableRow} key={port.container_port + port.protocol}>
                                         <CompactTableCell>{port.container_port}</CompactTableCell>
                                         <CompactTableCell>{port.host_port || "None"}</CompactTableCell>
                                         <CompactTableCell>{port.protocol}</CompactTableCell>
@@ -227,69 +215,13 @@ class PodDescribe extends Component {
                                   </TableBody>
                                 </Table>
                               </DescribeInfoRow>}
-                              <DescribeInfoRow title="State">
-                                <Table className={classes.nestedTable}>
-                                  <TableBody>
-                                    <DescribeInfoRow title={camelCase(state)}/>
-                                    {Object.keys(containerStatus.state[state]).map(key => (
-                                      <DescribeInfoRow title={camelCase(key)} key={key}>
-                                        {containerStatus.state[state][key]}
-                                      </DescribeInfoRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                              </DescribeInfoRow>
-                              {lastState && <DescribeInfoRow title="Last State">
-                                <Table className={classes.nestedTable}>
-                                  <TableBody>
-                                    <DescribeInfoRow title={camelCase(lastState)}/>
-                                    {Object.keys(containerStatus.last_state[lastState]).map(key => (
-                                      <DescribeInfoRow title={camelCase(key)} key={key}>
-                                        {containerStatus.last_state[lastState][key]}
-                                      </DescribeInfoRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                              </DescribeInfoRow>}
-                              {container.resources.requests && <DescribeInfoRow title="Requests">
-                                <Table className={classes.nestedTable}>
-                                  <TableBody>
-                                    {Object.keys(container.resources.requests).map(key => (
-                                      <DescribeInfoRow title={key} key={key}>
-                                        {container.resources.requests[key]}
-                                      </DescribeInfoRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                              </DescribeInfoRow>}
-                              {container.resources.limits && <DescribeInfoRow title="Limits">
-                                <Table className={classes.nestedTable}>
-                                  <TableBody>
-                                    {Object.keys(container.resources.limits).map(key => (
-                                      <DescribeInfoRow title={key} key={key}>
-                                        {container.resources.limits[key]}
-                                      </DescribeInfoRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                              </DescribeInfoRow>}
-                              {container.liveness_probe && <DescribeInfoRow title="Liveness Probe">
-                                {probeToString(container.liveness_probe)}
-                              </DescribeInfoRow>}
-                              {container.readiness_probe && <DescribeInfoRow title="Readiness Probe">
-                                {probeToString(container.liveness_probe)}
-                              </DescribeInfoRow>}
-                              {container.env.length > 0 && <DescribeInfoRow title="Environment">
-                                <Table className={classes.nestedTable}>
-                                  <TableBody>
-                                    {container.env.map(env => (
-                                      <DescribeInfoRow title={env.name} key={env.name}>
-                                        {env.value}
-                                      </DescribeInfoRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                              </DescribeInfoRow>}
+                              <State title="State" state={containerStatus.state} tableClassName={classes.nestedTable} />
+                              <State title="Last State" state={containerStatus.last_state} tableClassName={classes.nestedTable} />
+                              <Resources title="Requests" resources={container.resources.requests} tableClassName={classes.nestedTable} />
+                              <Resources title="Limits" resources={container.resources.limits} tableClassName={classes.nestedTable} />
+                              <Probe title="Liveness Probe" probe={container.liveness_probe} tableClassName={classes.nestedTable} />
+                              <Probe title="Readiness Probe" probe={container.readiness_probe} tableClassName={classes.nestedTable} />
+                              <Env environment={container.env} tableClassName={classes.nestedTable} />
                               <DescribeInfoRow title="Mounts">
                                 <Table className={classes.nestedTable}>
                                   <TableHead>
@@ -304,7 +236,7 @@ class PodDescribe extends Component {
                                       <TableRow className={classes.nestedTableRow} key={mount.mount_path}>
                                         <CompactTableCell>{mount.mount_path}</CompactTableCell>
                                         <CompactTableCell>{mount.name}</CompactTableCell>
-                                        <CompactTableCell>{mount.read_only ? "True" : "False"}</CompactTableCell>
+                                        <CompactTableCell>{boolean(mount.read_only)}</CompactTableCell>
                                       </TableRow>
                                     ))}
                                   </TableBody>
@@ -330,8 +262,8 @@ class PodDescribe extends Component {
                       <ExpansionPanelDetails className={classes.expansionPanelDetails}>
                         <Table className={classes.nestedTable}>
                           <TableBody>
-                            <DescribeInfoRow title="Type">{type}</DescribeInfoRow>
-                            <DescribeInfoRow title="Optional">{volume[type].optional ? "True" : "False"}</DescribeInfoRow>
+                            <DescribeInfoRow title="Type">{camelCase(type)}</DescribeInfoRow>
+                            <DescribeInfoRow title="Optional">{boolean(volume[type].optional)}</DescribeInfoRow>
                           </TableBody>
                         </Table>
                       </ExpansionPanelDetails>

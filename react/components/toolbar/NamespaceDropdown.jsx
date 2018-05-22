@@ -11,7 +11,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import { fetchPods } from '../actions/pods';
+import { fetchPods } from '../../actions/pods';
 
 const styles = theme => ({
   formControl: {

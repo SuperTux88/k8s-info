@@ -1,6 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
@@ -28,7 +29,7 @@ const mapStateToProps = state => ({
   contexts: state.contexts
 });
 
-const Index = ({ classes, contexts }) => {
+const Index = ({ classes, contexts, history }) => {
   if (contexts.loading) {
     return (
       <div>
@@ -44,6 +45,10 @@ const Index = ({ classes, contexts }) => {
       </div>
     );
   } else {
+    if (contexts.items.length === 1) {
+      history.push("/" + contexts.items[0])
+    }
+
     return (
       <div>
         <K8sLogoHeader/>
@@ -62,4 +67,4 @@ const Index = ({ classes, contexts }) => {
   }
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(Index));
+export default withRouter(connect(mapStateToProps)(withStyles(styles)(Index)));
