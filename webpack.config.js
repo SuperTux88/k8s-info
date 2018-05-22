@@ -1,4 +1,6 @@
 const webpack = require('webpack');
+const path = require('path');
+const ManifestRevisionPlugin = require('manifest-revision-webpack-plugin');
 
 const config = {
   entry: {
@@ -7,7 +9,7 @@ const config = {
   },
   output: {
     path: __dirname + '/app/static/js',
-    filename: '[name].bundle.js',
+    filename: '[name].[hash].js',
   },
   resolve: {
     extensions: ['.js', '.jsx']
@@ -28,7 +30,12 @@ const config = {
         use: 'url-loader?limit=100000'
       }
     ]
-  }
+  },
+  plugins: [
+    new ManifestRevisionPlugin(path.join('app', 'manifest.json'), {
+      rootAssetPath: __dirname + '/react'
+    })
+  ]
 };
 
 module.exports = config;
