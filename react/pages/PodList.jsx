@@ -15,9 +15,6 @@ import InfoIcon from '@material-ui/icons/Info';
 import { withStyles } from '@material-ui/core/styles';
 import { darken } from '@material-ui/core/styles/colorManipulator';
 
-import green from '@material-ui/core/colors/green';
-import red from '@material-ui/core/colors/red';
-
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import ContainerMenu from '../components/ContainerMenu';
@@ -47,7 +44,13 @@ const styles = theme => ({
   },
   containerName: {
     flex: 1,
-  }
+  },
+  ok: {
+    color: theme.palette.text.ok,
+  },
+  error: {
+    color: theme.palette.text.error,
+  },
 });
 
 const mapStateToProps = (state, { match }) => ({
@@ -100,15 +103,25 @@ class PodList extends Component {
                 const containerCount = containers.length;
                 const readyCount = containers.filter(c => c.ready).length;
 
+                let state = pod.status.phase;
+                let stateClassName = state === "Running" ? classes.ok : (state === "Failed" ? classes.error : null);
+                const containerState = [...new Set(containers.map(container => {
+                  return container.state[Object.keys(container.state).find(key => container.state[key])].reason
+                }).filter(Boolean))];
+                if (containerState.length === 1) {
+                  state = containerState[0];
+                  stateClassName = classes.error;
+                }
+
                 return (
                   <TableRow className={classes.row} key={podName}>
                     <CompactTableCell>{namespace}</CompactTableCell>
                     <CompactTableCell>{podName}</CompactTableCell>
-                    <CompactTableCell style={(readyCount === containerCount) ? {color: green[500]} : {}}>
+                    <CompactTableCell className={readyCount === containerCount ? classes.ok : null}>
                       {readyCount}/{containerCount}
                     </CompactTableCell>
-                    <CompactTableCell>{pod.status.phase}</CompactTableCell>
-                    <CompactTableCell numeric style={(restarts === 0) ? {color: green[500]} : {color: red[500]}}>
+                    <CompactTableCell className={stateClassName}>{state}</CompactTableCell>
+                    <CompactTableCell numeric className={restarts === 0 ? classes.ok : classes.error}>
                       {restarts}
                     </CompactTableCell>
                     <CompactTableCell numeric>
@@ -125,9 +138,16 @@ class PodList extends Component {
                     </CompactTableCell>
                     <CompactTableCell>
                       {containers.map(container => {
+                        const containerClasses = [classes.containerName];
+                        if (container.ready) {
+                          containerClasses.push(classes.ok);
+                        } else if (!container.state.running) {
+                          containerClasses.push(classes.error);
+                        }
+
                         return (
                           <div className={classes.containerInfo} key={container.name}>
-                            <div className={classes.containerName}>{container.name}</div>
+                            <div className={containerClasses.join(' ')}>{container.name}</div>
                             <ContainerMenu context={currentContext} namespace={namespace} pod={podName} container={container.name}/>
                           </div>
                         );

@@ -46,7 +46,8 @@ def pods(context):
                 'container_statuses': list(map(lambda c: {
                     'name': c.name,
                     'ready': c.ready,
-                    'restart_count': c.restart_count
+                    'restart_count': c.restart_count,
+                    'state': c.state.to_dict()
                 }, p.status.container_statuses or []))
             }
         })

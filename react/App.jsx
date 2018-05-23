@@ -11,7 +11,7 @@ import AppToolbar from './components/AppToolbar';
 import Index from './pages/Index';
 import PodList from './pages/PodList';
 import ContainerInfo from './pages/ContainerInfo';
-import PodDescribe from "./pages/PodDescribe";
+import PodDescribe from './pages/PodDescribe';
 
 class App extends Component {
   componentDidMount() {

@@ -23,11 +23,11 @@ const styles = theme => ({
   },
 });
 
-const DescribeInfoRow = ({ classes, className, title, children }) => {
+const DescribeInfoRow = ({ classes, className, valueClassName, title, children }) => {
   return (
     <TableRow className={[classes.row, className].join(' ')}>
       <TableCell className={classes.title}>{title}</TableCell>
-      <CompactTableCell className={classes.value}>{children}</CompactTableCell>
+      <CompactTableCell className={[classes.value, valueClassName].join(' ')}>{children}</CompactTableCell>
     </TableRow>
   )
 };

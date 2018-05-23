@@ -19,9 +19,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { withStyles } from '@material-ui/core/styles';
 import { darken } from '@material-ui/core/styles/colorManipulator';
 
-import green from '@material-ui/core/colors/green';
-import red from '@material-ui/core/colors/red';
-
 import { fetchPodDescribe } from '../actions/pod';
 
 import Loading from '../components/Loading';
@@ -87,6 +84,12 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
   },
+  ok: {
+    color: theme.palette.text.ok,
+  },
+  error: {
+    color: theme.palette.text.error,
+  },
 });
 
 const mapStateToProps = (state, { match }) => ({
@@ -140,7 +143,7 @@ class PodDescribe extends Component {
             <TableBody>
               <DescribeInfoRow title="Name">{metadata.name}</DescribeInfoRow>
               <DescribeInfoRow title="Namespace">{metadata.namespace}</DescribeInfoRow>
-              <DescribeInfoRow title="Status">{status.phase}</DescribeInfoRow>
+              <DescribeInfoRow title="Status" valueClassName={status.phase === "Running" ? classes.ok : (status.phase === "Failed" ? classes.error : null)}>{status.phase}</DescribeInfoRow>
               <DescribeInfoRow title="Node">{spec.node_name || "None"}</DescribeInfoRow>
               <DescribeInfoRow title="Node IP">{status.host_ip || "None"}</DescribeInfoRow>
               <DescribeInfoRow title="Pod IP">{status.pod_ip || "None"}</DescribeInfoRow>
@@ -174,13 +177,20 @@ class PodDescribe extends Component {
                   const linkPrefix = "/" + currentContext + "/" + metadata.namespace + "/" + metadata.name + "/" + container.name + "/";
                   const containerStatus = status.container_statuses.find(status => status.name === container.name);
 
+                  const readyClasses = [classes.expansionPanelSummaryContentInfo];
+                  if (containerStatus.ready) {
+                    readyClasses.push(classes.ok);
+                  } else if (!containerStatus.state.running) {
+                    readyClasses.push(classes.error);
+                  }
+
                   return (
                     <ExpansionPanel className={classes.expansionPanel} key={container.name} defaultExpanded={spec.containers.length === 1}>
                       <ExpansionPanelSummary className={classes.expansionPanelSummary} expandIcon={<ExpandMoreIcon />}>
                         <div style={{width: '100%'}} className={classes.expansionPanelSummaryContent}>
                           <Typography className={classes.expansionPanelSummaryContentInfo}>{container.name}</Typography>
-                          <Typography className={classes.expansionPanelSummaryContentInfo} style={containerStatus.ready ? {color: green[500]} : {}}>{containerStatus.ready ? "Ready" : "Not Ready"}</Typography>
-                          <Typography className={classes.expansionPanelSummaryContentInfo} style={containerStatus.restart_count === 0 ? {color: green[500]} : {color: red[500]}}>{containerStatus.restart_count + " Restarts"}</Typography>
+                          <Typography className={readyClasses.join(' ')}>{containerStatus.ready ? "Ready" : "Not Ready"}</Typography>
+                          <Typography className={[classes.expansionPanelSummaryContentInfo, containerStatus.restart_count === 0 ? classes.ok : classes.error].join(' ')}>{containerStatus.restart_count + " Restarts"}</Typography>
                         </div>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails className={classes.expansionPanelDetails}>
@@ -303,7 +313,7 @@ class PodDescribe extends Component {
                   </TableHead>
                   <TableBody>
                     {pod.pod.events.map(event => (
-                      <TableRow className={classes.nestedTableRow} key={event.reason}>
+                      <TableRow className={classes.nestedTableRow} key={event.reason + event.message}>
                         <CompactTableCell>{event.type}</CompactTableCell>
                         <CompactTableCell>{event.reason}</CompactTableCell>
                         <CompactTableCell numeric>{event.metadata.age}</CompactTableCell>
