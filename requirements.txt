@@ -1,6 +1,6 @@
 Flask
 Flask-Cors
-Flask-Webpack
+Flask-WebpackExt
 gunicorn
 
 kubernetes

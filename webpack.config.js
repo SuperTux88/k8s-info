@@ -1,6 +1,5 @@
 const webpack = require('webpack');
-const path = require('path');
-const ManifestRevisionPlugin = require('manifest-revision-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin')
 
 const config = {
   entry: {
@@ -9,7 +8,7 @@ const config = {
   },
   output: {
     path: __dirname + '/app/static/js',
-    filename: '[name].[hash].js',
+    filename: '[name].[chunkhash].js',
   },
   resolve: {
     extensions: ['.js', '.jsx']
@@ -32,8 +31,9 @@ const config = {
     ]
   },
   plugins: [
-    new ManifestRevisionPlugin(path.join('app', 'manifest.json'), {
-      rootAssetPath: __dirname + '/react'
+    new ManifestPlugin({
+      fileName: __dirname + '/app/manifest.json',
+      publicPath: "/static/js/"
     })
   ]
 };

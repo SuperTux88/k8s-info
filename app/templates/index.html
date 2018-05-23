@@ -13,7 +13,7 @@
       You need to enable JavaScript to run this app.
     </noscript>
     <div id="root" class="loader"></div>
-    {{ javascript_tag('index') | safe }}
-    {{ javascript_tag('fonts') | safe }}
+    {{ webpack['index.js'] }}
+    {{ webpack['fonts.js'] }}
   </body>
 </html>

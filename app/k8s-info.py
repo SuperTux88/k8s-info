@@ -1,18 +1,24 @@
 from flask import Flask, render_template
 from flask_cors import CORS
-from flask_webpack import Webpack
+from flask_webpackext import FlaskWebpackExt, WebpackTemplateProject
 
 from api import api
 
+project = WebpackTemplateProject(
+    __name__,
+    project_folder='..',
+)
+
 app = Flask(__name__)
-app.config["WEBPACK_ASSETS_URL"] = "/static/js/"
-app.config["WEBPACK_MANIFEST_PATH"] = "./manifest.json"
+app.config.update(dict(
+    WEBPACKEXT_PROJECT=project,
+    WEBPACKEXT_MANIFEST_PATH='../manifest.json',
+))
 
 cors = CORS(app, resources={r"/api/*": {'origins': '*'}})
 app.register_blueprint(api, url_prefix='/api')
 
-webpack = Webpack()
-webpack.init_app(app)
+FlaskWebpackExt(app)
 
 @app.route('/', defaults={'_path': ''})
 @app.route('/<path:_path>')
