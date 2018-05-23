@@ -12,14 +12,17 @@ import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import faLightbulb from '@fortawesome/fontawesome-free-regular/faLightbulb'
+import faLightbulbSolid from '@fortawesome/fontawesome-free-solid/faLightbulb'
 import faGithub from '@fortawesome/fontawesome-free-brands/faGithub'
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import { fetchContexts } from '../actions/contexts'
 import { fetchPods } from '../actions/pods'
 import { fetchPodDescribe } from '../actions/pod'
 import { fetchContainerInfo } from '../actions/containerInfo'
+import { changeThemePaletteType } from '../actions/theme'
 
 import ContextDropdown from './toolbar/ContextDropdown';
 import NamespaceDropdown from './toolbar/NamespaceDropdown';
@@ -35,6 +38,7 @@ const styles = theme => ({
     display: 'flex',
     alignItems: 'center',
     textDecoration: 'none',
+    color: theme.palette.primary.contrastText,
   },
   headerLogo: {
     marginRight: theme.spacing.unit * 2,
@@ -52,6 +56,7 @@ const mapStateToProps = (state, { match }) => ({
   currentPod: match.params.pod,
   currentContainer: match.params.container,
   currentPage: match.params.page,
+  uiTheme: state.theme,
 });
 
 class AppToolbar extends Component {
@@ -70,47 +75,67 @@ class AppToolbar extends Component {
     }
   };
 
+  handleTogglePaletteType = () => {
+    const newTheme = this.props.uiTheme.paletteType === 'light' ? 'dark' : 'light';
+    localStorage.setItem('uiTheme', newTheme);
+    this.props.dispatch(changeThemePaletteType(newTheme));
+  };
+
   render() {
-    const { classes } = this.props;
+    const { classes, uiTheme } = this.props;
 
     return (
-      <AppBar position="sticky" className={classes.root}>
-        <Toolbar>
-          <Link to="/" className={classes.link}>
-            <img src="/static/images/favicon.png" className={classes.headerLogo} alt="k8s-logo" />
-            <Typography variant="title">
-              k8s deployments
-            </Typography>
-          </Link>
-          <div className={classes.headerMenu}>
-            <ContextDropdown />
-            <NamespaceDropdown />
-            <Route path="/:context/:namespace/:pod" component={PodDropdown} />
-            <Route path="/:context/:namespace/:pod/:container/:page" component={ContainerDropdown} />
-            <Route path="/:context/:namespace/:pod/:container/:page" component={PageDropdown} />
-          </div>
+      <MuiThemeProvider theme={createMuiTheme({palette: {type: 'dark'}})}>
+        <AppBar position="sticky" className={classes.root}>
+          <Toolbar>
+            <Link to="/" className={classes.link}>
+              <img src="/static/images/favicon.png" className={classes.headerLogo} alt="k8s-logo" />
+              <Typography variant="title" color="inherit">
+                k8s deployments
+              </Typography>
+            </Link>
+            <div className={classes.headerMenu}>
+              <ContextDropdown />
+              <NamespaceDropdown />
+              <Route path="/:context/:namespace/:pod" component={PodDropdown} />
+              <Route path="/:context/:namespace/:pod/:container/:page" component={ContainerDropdown} />
+              <Route path="/:context/:namespace/:pod/:container/:page" component={PageDropdown} />
+            </div>
 
-          <Tooltip id="appbar-refresh" title="Refresh Data" enterDelay={300}>
-            <IconButton
-              aria-labelledby="appbar-refresh"
-              onClick={this.handleRefresh}
-            >
-              <RefreshIcon />
-            </IconButton>
-          </Tooltip>
+            <Tooltip id="appbar-refresh" title="Refresh Data" enterDelay={300}>
+              <IconButton
+                color="inherit"
+                aria-labelledby="appbar-refresh"
+                onClick={this.handleRefresh}
+              >
+                <RefreshIcon />
+              </IconButton>
+            </Tooltip>
 
-          <Tooltip id="appbar-github" title="GitHub Repo" enterDelay={300}>
-            <IconButton
-              component="a"
-              href="https://github.com/SuperTux88/k8s-info"
-              target="_blank"
-              aria-labelledby="appbar-github"
-            >
-              <FontAwesomeIcon icon={faGithub} />
-            </IconButton>
-          </Tooltip>
-        </Toolbar>
-      </AppBar>
+            <Tooltip id="appbar-theme" title="Toggle light/dark theme" enterDelay={300}>
+              <IconButton
+                color="inherit"
+                onClick={this.handleTogglePaletteType}
+                aria-labelledby="appbar-theme"
+              >
+                <FontAwesomeIcon icon={uiTheme.paletteType === 'light' ? faLightbulbSolid : faLightbulb} />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip id="appbar-github" title="GitHub Repo" enterDelay={300}>
+              <IconButton
+                component="a"
+                color="inherit"
+                href="https://github.com/SuperTux88/k8s-info"
+                target="_blank"
+                aria-labelledby="appbar-github"
+              >
+                <FontAwesomeIcon icon={faGithub} />
+              </IconButton>
+            </Tooltip>
+          </Toolbar>
+        </AppBar>
+      </MuiThemeProvider>
     );
   }
 }
