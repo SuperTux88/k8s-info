@@ -2,7 +2,7 @@
   "name": "k8s-info",
   "description": "k8s deployment infos",
   "author": "Benjamin Neff <benjamin@coding4.coffee>",
-  "license": "ISC",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^1.0.0",
