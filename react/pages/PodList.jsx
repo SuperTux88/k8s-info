@@ -8,16 +8,13 @@ import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
-import IconButton from '@material-ui/core/IconButton';
-
-import InfoIcon from '@material-ui/icons/Info';
+import Button from '@material-ui/core/Button';
 
 import { withStyles } from '@material-ui/core/styles';
 import { darken } from '@material-ui/core/styles/colorManipulator';
 
 import Loading from '../components/Loading';
 import Error from '../components/Error';
-import ContainerMenu from '../components/ContainerMenu';
 import CompactTableCell from '../components/CompactTableCell';
 
 const styles = theme => ({
@@ -30,17 +27,21 @@ const styles = theme => ({
     },
     height: '32px',
   },
-  describeButton: {
-    height: theme.spacing.unit * 3,
-    width: theme.spacing.unit * 3,
+  podName: {
+    display: 'flex',
+    alignItems: 'center',
   },
-  describeIcon: {
-    height: theme.spacing.unit * 2,
-    width: theme.spacing.unit * 2,
+  podLink: {
+    flex: 1,
+    color: theme.palette.text.primary,
+    textDecoration: 'none',
   },
   containerInfo: {
     display: 'flex',
     alignItems: 'center',
+    '&:not(:last-child)': {
+      marginBottom: theme.spacing.unit / 4,
+    },
   },
   containerName: {
     flex: 1,
@@ -50,6 +51,13 @@ const styles = theme => ({
   },
   error: {
     color: theme.palette.text.error,
+  },
+  button: {
+    marginLeft: theme.spacing.unit,
+    minHeight: theme.spacing.unit * 3,
+    minWidth: theme.spacing.unit * 6,
+    paddingTop: theme.spacing.unit / 4,
+    paddingBottom: theme.spacing.unit / 4,
   },
 });
 
@@ -83,11 +91,10 @@ class PodList extends Component {
               <TableRow>
                 <CompactTableCell>Namespace</CompactTableCell>
                 <CompactTableCell>Pod Name</CompactTableCell>
+                <CompactTableCell numeric>Age</CompactTableCell>
                 <CompactTableCell>Ready</CompactTableCell>
                 <CompactTableCell>Status</CompactTableCell>
                 <CompactTableCell numeric>Restarts</CompactTableCell>
-                <CompactTableCell numeric>Age</CompactTableCell>
-                <CompactTableCell>Describe</CompactTableCell>
                 <CompactTableCell>Containers</CompactTableCell>
               </TableRow>
             </TableHead>
@@ -95,6 +102,7 @@ class PodList extends Component {
               {pods.items.filter(pod => (!currentNamespace || pod.metadata.namespace === currentNamespace)).map(pod => {
                 const namespace = pod.metadata.namespace;
                 const podName = pod.metadata.name;
+                const podLink = "/" + currentContext + "/" + namespace + "/" + podName;
 
                 const restarts = pod.status.container_statuses.reduce((sum, container) => {
                   return sum + container.restart_count
@@ -116,7 +124,15 @@ class PodList extends Component {
                 return (
                   <TableRow className={classes.row} key={podName}>
                     <CompactTableCell>{namespace}</CompactTableCell>
-                    <CompactTableCell>{podName}</CompactTableCell>
+                    <CompactTableCell>
+                      <div className={classes.podName}>
+                        <Link className={classes.podLink} to={podLink}>{podName}</Link>
+                        <Button size="small" variant="outlined" className={classes.button} component={Link} to={podLink}>Describe</Button>
+                      </div>
+                    </CompactTableCell>
+                    <CompactTableCell numeric>
+                      <span>{pod.metadata.age}</span>
+                    </CompactTableCell>
                     <CompactTableCell className={readyCount === containerCount ? classes.ok : null}>
                       {readyCount}/{containerCount}
                     </CompactTableCell>
@@ -124,20 +140,10 @@ class PodList extends Component {
                     <CompactTableCell numeric className={restarts === 0 ? classes.ok : classes.error}>
                       {restarts}
                     </CompactTableCell>
-                    <CompactTableCell numeric>
-                      <span>{pod.metadata.age}</span>
-                    </CompactTableCell>
-                    <CompactTableCell>
-                      <IconButton
-                        className={classes.describeButton}
-                        component={Link}
-                        to={"/" + currentContext + "/" + namespace + "/" + podName}
-                      >
-                        <InfoIcon className={classes.describeIcon}/>
-                      </IconButton>
-                    </CompactTableCell>
                     <CompactTableCell>
                       {containers.map(container => {
+                        const linkPrefix = "/" + currentContext + "/" + namespace + "/" + podName + "/" + container.name + "/";
+
                         const containerClasses = [classes.containerName];
                         if (container.ready) {
                           containerClasses.push(classes.ok);
@@ -148,7 +154,9 @@ class PodList extends Component {
                         return (
                           <div className={classes.containerInfo} key={container.name}>
                             <div className={containerClasses.join(' ')}>{container.name}</div>
-                            <ContainerMenu context={currentContext} namespace={namespace} pod={podName} container={container.name}/>
+                            <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + "log"}>Log</Button>
+                            <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + "ps"}>Processes</Button>
+                            <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + "env"}>Env</Button>
                           </div>
                         );
                       })}
