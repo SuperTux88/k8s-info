@@ -6,6 +6,8 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 import { withStyles } from '@material-ui/core/styles';
 import { darken } from '@material-ui/core/styles/colorManipulator';
@@ -20,6 +22,9 @@ const styles = theme => ({
   root: {
     margin: theme.spacing.unit * 3,
     padding: theme.spacing.unit * 2,
+  },
+  switch: {
+    marginTop: -theme.spacing.unit,
   },
   pre: {
     overflow: 'auto',
@@ -43,6 +48,18 @@ const mapStateToProps = (state, { match }) => ({
 });
 
 class ContainerInfo extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      wrapped: JSON.parse(localStorage.getItem('wrapTextOutput'))
+    };
+  }
+
+  handleWrapChange = event => {
+    localStorage.setItem('wrapTextOutput', event.target.checked);
+    this.setState({ wrapped: event.target.checked });
+  };
+
   fetchContent = () => {
     const { context, namespace, pod, container, page } = this.props;
     this.props.dispatch(fetchContainerInfo(context, namespace, pod, container, page));
@@ -64,6 +81,7 @@ class ContainerInfo extends Component {
 
   render() {
     const { classes, containerInfo } = this.props;
+    const { wrapped } = this.state;
 
     if (containerInfo.error) {
       return (
@@ -80,9 +98,22 @@ class ContainerInfo extends Component {
     } else {
       return (
         <Paper className={classes.root}>
-          {typeof containerInfo.content === 'string' && <Typography component='pre' className={classes.pre}>
-            {containerInfo.content}
-          </Typography>}
+          {typeof containerInfo.content === 'string' && <div>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={wrapped}
+                  onChange={this.handleWrapChange}
+                  color="primary"
+                />
+              }
+              label="Wrap output"
+              className={classes.switch}
+            />
+            <Typography component='pre' className={classes.pre} style={wrapped ? {whiteSpace: 'pre-wrap'} : {}}>
+              {containerInfo.content}
+            </Typography>
+          </div>}
           {typeof containerInfo.content === 'object' && <Table>
             <TableBody>
               {Object.keys(containerInfo.content).map(key => (
