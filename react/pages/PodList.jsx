@@ -13,6 +13,8 @@ import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { darken } from '@material-ui/core/styles/colorManipulator';
 
+import { fetchPods } from '../actions/pods';
+
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import CompactTableCell from '../components/CompactTableCell';
@@ -68,6 +70,12 @@ const mapStateToProps = (state, { match }) => ({
 });
 
 class PodList extends Component {
+  componentDidMount() {
+    if (this.props.pods.items.length > 0) {
+      this.props.dispatch(fetchPods(this.props.currentContext));
+    }
+  }
+
   render() {
     const { classes, currentContext, currentNamespace, pods } = this.props;
 
