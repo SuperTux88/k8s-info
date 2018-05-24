@@ -1,0 +1,21 @@
+# git
+.git
+.gitignore
+
+# IDE
+.idea
+
+# python
+.venv
+*.pyc
+
+# nodejs
+package-lock.json
+node_modules
+app/static/js/*.*.js
+app/manifest.json
+npm-debug.log
+
+# misc
+.dockerignore
+.editorconfig
