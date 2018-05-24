@@ -38,8 +38,9 @@ def pods(context):
             'metadata': {
                 'namespace': p.metadata.namespace,
                 'name': p.metadata.name,
-                'creation_timestamp': p.metadata.creation_timestamp.isoformat(),
-                'age': get_age(p.metadata.creation_timestamp)
+                'creation_timestamp': p.metadata.creation_timestamp.astimezone().isoformat(),
+                'age': get_age(p.metadata.creation_timestamp),
+                'deletion_timestamp': p.metadata.deletion_timestamp.astimezone().isoformat() if p.metadata.deletion_timestamp else None
             },
             'status': {
                 'phase': p.status.phase,
@@ -68,6 +69,7 @@ def describe(context, namespace, pod):
                 'name': pod_ret.metadata.name,
                 'creation_timestamp': pod_ret.metadata.creation_timestamp.astimezone().isoformat(),
                 'age': get_age(pod_ret.metadata.creation_timestamp),
+                'deletion_timestamp': pod_ret.metadata.deletion_timestamp.astimezone().isoformat() if pod_ret.metadata.deletion_timestamp else None,
                 'labels': pod_ret.metadata.labels,
                 'owner_references': list(map(lambda r: {
                     'kind': r.kind,

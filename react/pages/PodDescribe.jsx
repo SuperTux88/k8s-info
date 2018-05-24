@@ -137,13 +137,18 @@ class PodDescribe extends Component {
       const spec = pod.pod.spec;
       const status = pod.pod.status;
 
+      let state = status.phase;
+      if (metadata.deletion_timestamp) {
+        state = "Terminating";
+      }
+
       return (
         <Paper className={classes.root}>
           <Table className={classes.table}>
             <TableBody>
               <DescribeInfoRow title="Name">{metadata.name}</DescribeInfoRow>
               <DescribeInfoRow title="Namespace">{metadata.namespace}</DescribeInfoRow>
-              <DescribeInfoRow title="Status" valueClassName={status.phase === "Running" ? classes.ok : (status.phase === "Failed" ? classes.error : null)}>{status.phase}</DescribeInfoRow>
+              <DescribeInfoRow title="Status" valueClassName={state === "Running" ? classes.ok : (state === "Failed" ? classes.error : null)}>{state}</DescribeInfoRow>
               <DescribeInfoRow title="Node">{spec.node_name || "None"}</DescribeInfoRow>
               <DescribeInfoRow title="Node IP">{status.host_ip || "None"}</DescribeInfoRow>
               <DescribeInfoRow title="Pod IP">{status.pod_ip || "None"}</DescribeInfoRow>

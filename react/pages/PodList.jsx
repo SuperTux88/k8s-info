@@ -120,13 +120,19 @@ class PodList extends Component {
                 const readyCount = containers.filter(c => c.ready).length;
 
                 let state = pod.status.phase;
+                if (pod.metadata.deletion_timestamp) {
+                  state = "Terminating";
+                }
+
                 let stateClassName = state === "Running" ? classes.ok : (state === "Failed" ? classes.error : null);
-                const containerState = [...new Set(containers.map(container => {
-                  return container.state[Object.keys(container.state).find(key => container.state[key])].reason
-                }).filter(Boolean))];
-                if (containerState.length === 1) {
-                  state = containerState[0];
-                  stateClassName = classes.error;
+		if (!pod.metadata.deletion_timestamp) {
+                  const containerState = [...new Set(containers.map(container => {
+                    return container.state[Object.keys(container.state).find(key => container.state[key])].reason
+                  }).filter(Boolean))];
+                  if (containerState.length === 1) {
+                    state = containerState[0];
+                    stateClassName = state === "ContainerCreating" ? null : classes.error;
+                  }
                 }
 
                 return (
