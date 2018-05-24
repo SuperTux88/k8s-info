@@ -144,7 +144,7 @@ def env(context, namespace, pod, container):
     ret = stream(get_client(context).connect_get_namespaced_pod_exec, pod, namespace, container=container,
                  command=['printenv'], stdout=True)
 
-    sorted_env = dict(e.split("=") for e in sorted(filter(None, ret.strip().split('\n'))))
+    sorted_env = dict(e.split("=", 1) for e in sorted(filter(None, ret.strip().split('\n'))))
 
     return jsonify(sorted_env)
 
