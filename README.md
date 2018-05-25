@@ -1,4 +1,4 @@
-## k8s-info
+# k8s-info
 ### A kubernetes deployments info dashboard
 
 [![license](https://img.shields.io/github/license/SuperTux88/k8s-info.svg)](https://github.com/SuperTux88/k8s-info/blob/master/LICENSE)
@@ -7,7 +7,7 @@
 [![npm dependencies Status](https://david-dm.org/SuperTux88/k8s-info/status.svg)](https://david-dm.org/SuperTux88/k8s-info)
 [![npm dev dependencies Status](https://david-dm.org/SuperTux88/k8s-info/dev-status.svg)](https://david-dm.org/SuperTux88/k8s-info?type=dev)
 
-### Run
+## Run
 
 Using docker:
 
@@ -17,7 +17,7 @@ docker run --rm -v ~/.kube:/home/k8s-info/.kube -p 8000:8000 supertux88/k8s-info
 
 The mounted volume must contain a `config` file and paths to certs and keys need to be relative.
 
-### Development
+## Development
 
 You can run this project locally with a [minikube](https://kubernetes.io/docs/getting-started-guides/minikube/) cluster.
 
