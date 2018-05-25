@@ -14,6 +14,13 @@ def get_age(ts):
     return "{}d".format(int(seconds/60/60/24))
 
 
+def safe_to_iso_timestamp(ts):
+    try:
+        return ts.astimezone().isoformat()
+    except AttributeError:
+        return None
+
+
 def safe_to_dict(val):
     try:
         return val.to_dict()

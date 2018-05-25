@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, abort, Response
 import json
 from kubernetes import client, config
 from kubernetes.stream import stream
-from utils import get_age, safe_to_dict
+from utils import get_age, safe_to_iso_timestamp, safe_to_dict
 
 api = Blueprint('api', __name__)
 
@@ -38,9 +38,9 @@ def pods(context):
             'metadata': {
                 'namespace': p.metadata.namespace,
                 'name': p.metadata.name,
-                'creation_timestamp': p.metadata.creation_timestamp.astimezone().isoformat(),
+                'creation_timestamp': safe_to_iso_timestamp(p.metadata.creation_timestamp),
                 'age': get_age(p.metadata.creation_timestamp),
-                'deletion_timestamp': p.metadata.deletion_timestamp.astimezone().isoformat() if p.metadata.deletion_timestamp else None
+                'deletion_timestamp': safe_to_iso_timestamp(p.metadata.deletion_timestamp)
             },
             'status': {
                 'phase': p.status.phase,
@@ -67,9 +67,9 @@ def describe(context, namespace, pod):
             'metadata': {
                 'namespace': pod_ret.metadata.namespace,
                 'name': pod_ret.metadata.name,
-                'creation_timestamp': pod_ret.metadata.creation_timestamp.astimezone().isoformat(),
+                'creation_timestamp': safe_to_iso_timestamp(pod_ret.metadata.creation_timestamp),
                 'age': get_age(pod_ret.metadata.creation_timestamp),
-                'deletion_timestamp': pod_ret.metadata.deletion_timestamp.astimezone().isoformat() if pod_ret.metadata.deletion_timestamp else None,
+                'deletion_timestamp': safe_to_iso_timestamp(pod_ret.metadata.deletion_timestamp),
                 'labels': pod_ret.metadata.labels,
                 'owner_references': list(map(lambda r: {
                     'kind': r.kind,
@@ -89,13 +89,15 @@ def describe(context, namespace, pod):
                 }, pod_ret.spec.containers)),
                 'volumes': list(map(lambda v: v.to_dict(), pod_ret.spec.volumes)),
                 'node_selector': pod_ret.spec.node_selector,
-                'tolerations': list(map(lambda v: v.to_dict(), pod_ret.spec.tolerations)) if pod_ret.spec.tolerations else None
+                'tolerations': list(
+                    map(lambda v: v.to_dict(), pod_ret.spec.tolerations)
+                ) if pod_ret.spec.tolerations else None
             },
             'status': {
                 'conditions': list(map(lambda c: {
                     'status': c.status,
                     'type': c.type,
-                    'last_transition_time': c.last_transition_time.astimezone().isoformat()
+                    'last_transition_time': safe_to_iso_timestamp(c.last_transition_time)
                 }, pod_ret.status.conditions)),
                 'phase': pod_ret.status.phase,
                 'container_statuses': list(map(lambda c: {
@@ -117,7 +119,7 @@ def describe(context, namespace, pod):
                 'reason': e.reason,
                 'metadata': {
                     'name': pod_ret.metadata.name,
-                    'creation_timestamp': e.metadata.creation_timestamp.astimezone().isoformat(),
+                    'creation_timestamp': safe_to_iso_timestamp(e.metadata.creation_timestamp),
                     'age': get_age(e.metadata.creation_timestamp)
                 },
                 'message': e.message,
@@ -157,4 +159,3 @@ def get_client(context):
         return client.CoreV1Api()
     except config.config_exception.ConfigException:
         abort(404)
-

@@ -20,6 +20,7 @@ app.register_blueprint(api, url_prefix='/api')
 
 FlaskWebpackExt(app)
 
+
 @app.route('/', defaults={'_path': ''})
 @app.route('/<path:_path>')
 def index(_path):
