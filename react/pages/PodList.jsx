@@ -27,7 +27,7 @@ const styles = theme => ({
     '&:nth-of-type(odd)': {
       backgroundColor: darken(theme.palette.background.paper, 0.1),
     },
-    height: '32px',
+    height: 32,
   },
   podName: {
     display: 'flex',
@@ -40,7 +40,9 @@ const styles = theme => ({
   },
   containerInfo: {
     display: 'flex',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    height: 24,
     '&:not(:last-child)': {
       marginBottom: theme.spacing.unit / 4,
     },
@@ -56,7 +58,7 @@ const styles = theme => ({
   },
   button: {
     marginLeft: theme.spacing.unit,
-    minHeight: theme.spacing.unit * 3,
+    minHeight: 24,
     minWidth: theme.spacing.unit * 6,
     paddingTop: theme.spacing.unit / 4,
     paddingBottom: theme.spacing.unit / 4,
@@ -112,9 +114,6 @@ class PodList extends Component {
                 const podName = pod.metadata.name;
                 const podLink = "/" + currentContext + "/" + namespace + "/" + podName;
 
-                const restarts = pod.status.container_statuses.reduce((sum, container) => {
-                  return sum + container.restart_count
-                }, 0);
                 const containers = pod.status.container_statuses;
                 const containerCount = containers.length;
                 const readyCount = containers.filter(c => c.ready).length;
@@ -151,8 +150,16 @@ class PodList extends Component {
                       {readyCount}/{containerCount}
                     </CompactTableCell>
                     <CompactTableCell className={stateClassName}>{state}</CompactTableCell>
-                    <CompactTableCell numeric className={restarts === 0 ? classes.ok : classes.error}>
-                      {restarts}
+                    <CompactTableCell>
+                      {containers.map(container => {
+                        const color_class = container.restart_count === 0 ? classes.ok : classes.error;
+
+                        return (
+                          <div className={[classes.containerInfo, color_class].join(' ')} key={container.name + "-restarts"}>
+                            {container.restart_count}
+                          </div>
+                        )
+                      })}
                     </CompactTableCell>
                     <CompactTableCell>
                       {containers.map(container => {
