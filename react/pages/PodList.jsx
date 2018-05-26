@@ -13,6 +13,8 @@ import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { darken } from '@material-ui/core/styles/colorManipulator';
 
+import get from 'lodash/get';
+
 import { fetchPods } from '../actions/pods';
 
 import Loading from '../components/Loading';
@@ -102,7 +104,6 @@ class PodList extends Component {
                 <CompactTableCell>Namespace</CompactTableCell>
                 <CompactTableCell>Pod Name</CompactTableCell>
                 <CompactTableCell numeric>Age</CompactTableCell>
-                <CompactTableCell>Ready</CompactTableCell>
                 <CompactTableCell>Status</CompactTableCell>
                 <CompactTableCell numeric>Restarts</CompactTableCell>
                 <CompactTableCell>Containers</CompactTableCell>
@@ -115,8 +116,6 @@ class PodList extends Component {
                 const podLink = "/" + currentContext + "/" + namespace + "/" + podName;
 
                 const containers = pod.status.container_statuses;
-                const containerCount = containers.length;
-                const readyCount = containers.filter(c => c.ready).length;
 
                 let state = pod.status.phase;
                 if (pod.metadata.deletion_timestamp) {
@@ -124,7 +123,7 @@ class PodList extends Component {
                 }
 
                 let stateClassName = state === "Running" ? classes.ok : (state === "Failed" ? classes.error : null);
-		if (!pod.metadata.deletion_timestamp) {
+                if (!pod.metadata.deletion_timestamp) {
                   const containerState = [...new Set(containers.map(container => {
                     return container.state[Object.keys(container.state).find(key => container.state[key])].reason
                   }).filter(Boolean))];
@@ -146,9 +145,6 @@ class PodList extends Component {
                     <CompactTableCell numeric>
                       <span>{pod.metadata.age}</span>
                     </CompactTableCell>
-                    <CompactTableCell className={readyCount === containerCount ? classes.ok : null}>
-                      {readyCount}/{containerCount}
-                    </CompactTableCell>
                     <CompactTableCell className={stateClassName}>{state}</CompactTableCell>
                     <CompactTableCell>
                       {containers.map(container => {
@@ -168,7 +164,9 @@ class PodList extends Component {
                         const containerClasses = [classes.containerName];
                         if (container.ready) {
                           containerClasses.push(classes.ok);
-                        } else if (!container.state.running) {
+                        } else if (!container.state.running &&
+                          get(container.state, 'waiting.reason') !== "ContainerCreating" &&
+                          get(container.state, 'terminated.reason') !== "Completed") {
                           containerClasses.push(classes.error);
                         }
 
