@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -75,8 +76,10 @@ const mapStateToProps = (state, { match }) => ({
 
 class PodList extends Component {
   componentDidMount() {
-    if (this.props.pods.items.length > 0) {
-      this.props.dispatch(fetchPods(this.props.currentContext));
+    const { pods, currentContext, dispatch } = this.props;
+
+    if (pods.items.length > 0) {
+      dispatch(fetchPods(currentContext));
     }
   }
 
@@ -86,13 +89,13 @@ class PodList extends Component {
     if (pods.loading) {
       return (
         <div>
-          <Loading/>
+          <Loading />
         </div>
       );
     } else if (pods.error) {
       return (
         <div>
-          <Error message={pods.error.message}/>
+          <Error message={pods.error.message} />
         </div>
       );
     } else {
@@ -113,23 +116,23 @@ class PodList extends Component {
               {pods.items.filter(pod => (!currentNamespace || pod.metadata.namespace === currentNamespace)).map(pod => {
                 const namespace = pod.metadata.namespace;
                 const podName = pod.metadata.name;
-                const podLink = "/" + currentContext + "/" + namespace + "/" + podName;
+                const podLink = '/' + currentContext + '/' + namespace + '/' + podName;
 
                 const containers = pod.status.container_statuses;
 
                 let state = pod.status.phase;
                 if (pod.metadata.deletion_timestamp) {
-                  state = "Terminating";
+                  state = 'Terminating';
                 }
 
-                let stateClassName = state === "Running" ? classes.ok : (state === "Failed" ? classes.error : null);
+                let stateClassName = state === 'Running' ? classes.ok : (state === 'Failed' ? classes.error : null);
                 if (!pod.metadata.deletion_timestamp) {
                   const containerState = [...new Set(containers.map(container => {
-                    return container.state[Object.keys(container.state).find(key => container.state[key])].reason
+                    return container.state[Object.keys(container.state).find(key => container.state[key])].reason;
                   }).filter(Boolean))];
                   if (containerState.length === 1) {
                     state = containerState[0];
-                    stateClassName = state === "ContainerCreating" ? null : classes.error;
+                    stateClassName = state === 'ContainerCreating' ? null : classes.error;
                   }
                 }
 
@@ -148,34 +151,34 @@ class PodList extends Component {
                     <CompactTableCell className={stateClassName}>{state}</CompactTableCell>
                     <CompactTableCell>
                       {containers.map(container => {
-                        const color_class = container.restart_count === 0 ? classes.ok : classes.error;
+                        const colorClass = container.restart_count === 0 ? classes.ok : classes.error;
 
                         return (
-                          <div className={[classes.containerInfo, color_class].join(' ')} key={container.name + "-restarts"}>
+                          <div className={[classes.containerInfo, colorClass].join(' ')} key={container.name + '-restarts'}>
                             {container.restart_count}
                           </div>
-                        )
+                        );
                       })}
                     </CompactTableCell>
                     <CompactTableCell>
                       {containers.map(container => {
-                        const linkPrefix = "/" + currentContext + "/" + namespace + "/" + podName + "/" + container.name + "/";
+                        const linkPrefix = '/' + currentContext + '/' + namespace + '/' + podName + '/' + container.name + '/';
 
                         const containerClasses = [classes.containerName];
                         if (container.ready) {
                           containerClasses.push(classes.ok);
                         } else if (!container.state.running &&
-                          get(container.state, 'waiting.reason') !== "ContainerCreating" &&
-                          get(container.state, 'terminated.reason') !== "Completed") {
+                          get(container.state, 'waiting.reason') !== 'ContainerCreating' &&
+                          get(container.state, 'terminated.reason') !== 'Completed') {
                           containerClasses.push(classes.error);
                         }
 
                         return (
                           <div className={classes.containerInfo} key={container.name}>
                             <div className={containerClasses.join(' ')}>{container.name}</div>
-                            <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + "log"}>Log</Button>
-                            <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + "ps"}>Processes</Button>
-                            <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + "env"}>Env</Button>
+                            <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'log'}>Log</Button>
+                            <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'ps'}>Processes</Button>
+                            <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'env'}>Env</Button>
                           </div>
                         );
                       })}
@@ -190,5 +193,17 @@ class PodList extends Component {
     }
   }
 }
+
+PodList.propTypes = {
+  classes: PropTypes.object.isRequired,
+  currentContext: PropTypes.string.isRequired,
+  currentNamespace: PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  pods: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.object,
+    items: PropTypes.array.isRequired,
+  }).isRequired,
+};
 
 export default withRouter(connect(mapStateToProps)(withStyles(styles)(PodList)));

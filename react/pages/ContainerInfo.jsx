@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
@@ -12,7 +13,7 @@ import Switch from '@material-ui/core/Switch';
 import { withStyles } from '@material-ui/core/styles';
 import { darken } from '@material-ui/core/styles/colorManipulator';
 
-import { fetchContainerInfo } from "../actions/containerInfo";
+import { fetchContainerInfo } from '../actions/containerInfo';
 
 import Loading from '../components/Loading';
 import Error from '../components/Error';
@@ -28,7 +29,7 @@ const styles = theme => ({
   },
   pre: {
     overflow: 'auto',
-    fontFamily: ["Roboto Mono", "monospace"],
+    fontFamily: ['Roboto Mono', 'monospace'],
     fontSize: theme.typography.pxToRem(12),
   },
   row: {
@@ -51,30 +52,33 @@ class ContainerInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      wrapped: JSON.parse(localStorage.getItem('wrapTextOutput'))
+      wrapped: JSON.parse(localStorage.getItem('wrapTextOutput')),
     };
   }
 
-  handleWrapChange = event => {
+  handleWrapChange(event) {
     localStorage.setItem('wrapTextOutput', event.target.checked);
     this.setState({ wrapped: event.target.checked });
-  };
+  }
 
-  fetchContent = () => {
-    const { context, namespace, pod, container, page } = this.props;
-    this.props.dispatch(fetchContainerInfo(context, namespace, pod, container, page));
-  };
+  fetchContent() {
+    const { context, namespace, pod, container, page, dispatch } = this.props;
+
+    dispatch(fetchContainerInfo(context, namespace, pod, container, page));
+  }
 
   componentDidMount() {
     this.fetchContent();
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.context !== prevProps.context ||
-      this.props.namespace !== prevProps.namespace ||
-      this.props.pod !== prevProps.pod ||
-      this.props.container !== prevProps.container ||
-      this.props.page !== prevProps.page) {
+    const { context, namespace, pod, container, page } = this.props;
+
+    if (context !== prevProps.context ||
+      namespace !== prevProps.namespace ||
+      pod !== prevProps.pod ||
+      container !== prevProps.container ||
+      page !== prevProps.page) {
       this.fetchContent();
     }
   }
@@ -86,47 +90,69 @@ class ContainerInfo extends Component {
     if (containerInfo.error) {
       return (
         <div>
-          <Error message={containerInfo.error.message}/>
+          <Error message={containerInfo.error.message} />
         </div>
       );
     } else if (containerInfo.loading || !containerInfo.content) {
       return (
         <div>
-          <Loading/>
+          <Loading />
         </div>
       );
     } else {
       return (
         <Paper className={classes.root}>
-          {typeof containerInfo.content === 'string' && <div>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={wrapped}
-                  onChange={this.handleWrapChange}
-                  color="primary"
-                />
-              }
-              label="Wrap output"
-              className={classes.switch}
-            />
-            <Typography component='pre' className={classes.pre} style={wrapped ? {whiteSpace: 'pre-wrap'} : {}}>
-              {containerInfo.content}
-            </Typography>
-          </div>}
-          {typeof containerInfo.content === 'object' && <Table>
-            <TableBody>
-              {Object.keys(containerInfo.content).map(key => (
-                <DescribeInfoRow title={key} key={key} className={classes.row}>
-                  {containerInfo.content[key]}
-                </DescribeInfoRow>
-              ))}
-            </TableBody>
-          </Table>}
+          {typeof containerInfo.content === 'string' &&
+            <div>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={wrapped}
+                    onChange={this.handleWrapChange}
+                    color="primary"
+                  />
+                }
+                label="Wrap output"
+                className={classes.switch}
+              />
+              <Typography component='pre' className={classes.pre} style={wrapped ? { whiteSpace: 'pre-wrap' } : {}}>
+                {containerInfo.content}
+              </Typography>
+            </div>
+          }
+          {typeof containerInfo.content === 'object' &&
+            <Table>
+              <TableBody>
+                {Object.keys(containerInfo.content).map(key => (
+                  <DescribeInfoRow title={key} key={key} className={classes.row}>
+                    {containerInfo.content[key]}
+                  </DescribeInfoRow>
+                ))}
+              </TableBody>
+            </Table>
+          }
         </Paper>
       );
     }
   }
 }
+
+ContainerInfo.propTypes = {
+  classes: PropTypes.object.isRequired,
+  container: PropTypes.string.isRequired,
+  containerInfo: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.object,
+    content: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.object,
+    ]),
+  }).isRequired,
+  context: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  namespace: PropTypes.string.isRequired,
+  page: PropTypes.string.isRequired,
+  pod: PropTypes.string.isRequired,
+};
 
 export default withRouter(connect(mapStateToProps)(withStyles(styles)(ContainerInfo)));

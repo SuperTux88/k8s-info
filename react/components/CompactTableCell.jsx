@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import TableCell from '@material-ui/core/TableCell';
 
@@ -14,7 +15,13 @@ const styles = theme => ({
 const CompactTableCell = ({ classes, className, children, ...props }) => {
   return (
     <TableCell {...props} className={[classes.cell, className].join(' ')}>{children}</TableCell>
-  )
+  );
+};
+
+CompactTableCell.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.string,
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(CompactTableCell);

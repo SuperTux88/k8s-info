@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -12,21 +13,29 @@ const Probe = ({ title, probe, tableClassName }) => {
         <Table className={tableClassName}>
           <TableBody>
             {probe.http_get && <DescribeInfoRow title="http-get" />}
-            {probe.http_get && <DescribeInfoRow title="URL">
-              {probe.http_get.scheme.toLowerCase() + "://" + (probe.http_get.host || "") + ":" + probe.http_get.port + probe.http_get.path}
-            </DescribeInfoRow>}
+            {probe.http_get &&
+              <DescribeInfoRow title="URL">
+                {probe.http_get.scheme.toLowerCase() + '://' + (probe.http_get.host || '') + ':' + probe.http_get.port + probe.http_get.path}
+              </DescribeInfoRow>
+            }
 
             {probe._exec && <DescribeInfoRow title="exec" />}
-            {probe._exec && <DescribeInfoRow title="Command">
-              {probe._exec.command.join(" ")}
-            </DescribeInfoRow>}
+            {probe._exec &&
+              <DescribeInfoRow title="Command">
+                {probe._exec.command.join(' ')}
+              </DescribeInfoRow>
+            }
 
             <DescribeInfoRow title="Timing">
               <Table className={tableClassName}>
                 <TableBody>
-                  {probe.initial_delay_seconds && <DescribeInfoRow title="Initial delay">{probe.initial_delay_seconds + "s"}</DescribeInfoRow>}
-                  <DescribeInfoRow title="Timeout">{probe.timeout_seconds + "s"}</DescribeInfoRow>
-                  <DescribeInfoRow title="Period">{probe.period_seconds + "s"}</DescribeInfoRow>
+                  {probe.initial_delay_seconds &&
+                    <DescribeInfoRow title="Initial delay">
+                      {probe.initial_delay_seconds + 's'}
+                    </DescribeInfoRow>
+                  }
+                  <DescribeInfoRow title="Timeout">{probe.timeout_seconds + 's'}</DescribeInfoRow>
+                  <DescribeInfoRow title="Period">{probe.period_seconds + 's'}</DescribeInfoRow>
                 </TableBody>
               </Table>
             </DescribeInfoRow>
@@ -45,6 +54,12 @@ const Probe = ({ title, probe, tableClassName }) => {
   }
 
   return (null);
+};
+
+Probe.propTypes = {
+  probe: PropTypes.object,
+  tableClassName: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
 };
 
 export default Probe;

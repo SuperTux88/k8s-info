@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -25,6 +26,12 @@ const Resources = ({ title, resources, tableClassName }) => {
   }
 
   return (null);
+};
+
+Resources.propTypes = {
+  resources: PropTypes.object,
+  tableClassName: PropTypes.string,
+  title: PropTypes.string.isRequired,
 };
 
 export default Resources;

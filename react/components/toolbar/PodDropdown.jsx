@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -40,17 +41,29 @@ const PodDropdown = ({ classes, currentContext, currentNamespace, currentPod, po
           const podName = pod.metadata.name;
 
           return (
-            <MenuItem component={Link} to={"/" + currentContext + "/" + currentNamespace + "/" + podName} value={podName} key={podName}>
+            <MenuItem component={Link} to={'/' + currentContext + '/' + currentNamespace + '/' + podName} value={podName} key={podName}>
               {podName}
             </MenuItem>
           );
         })}
         {pods.loading && <MenuItem value={currentPod}>{currentPod}</MenuItem>}
-        {pods.loading && <MenuItem><CircularProgress/></MenuItem>}
+        {pods.loading && <MenuItem><CircularProgress /></MenuItem>}
         {pods.error && <MenuItem>Error!</MenuItem>}
       </Select>
     </FormControl>
   );
+};
+
+PodDropdown.propTypes = {
+  classes: PropTypes.object.isRequired,
+  currentContext: PropTypes.string.isRequired,
+  currentNamespace: PropTypes.string.isRequired,
+  currentPod: PropTypes.string.isRequired,
+  pods: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.object,
+    items: PropTypes.array.isRequired,
+  }).isRequired,
 };
 
 export default withRouter(connect(mapStateToProps)(withStyles(styles)(PodDropdown)));

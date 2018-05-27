@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Link, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -11,18 +12,18 @@ import IconButton from '@material-ui/core/IconButton';
 
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import faLightbulb from '@fortawesome/fontawesome-free-regular/faLightbulb'
-import faLightbulbSolid from '@fortawesome/fontawesome-free-solid/faLightbulb'
-import faGithub from '@fortawesome/fontawesome-free-brands/faGithub'
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import faLightbulb from '@fortawesome/fontawesome-free-regular/faLightbulb';
+import faLightbulbSolid from '@fortawesome/fontawesome-free-solid/faLightbulb';
+import faGithub from '@fortawesome/fontawesome-free-brands/faGithub';
 
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
-import { fetchContexts } from '../actions/contexts'
-import { fetchPods } from '../actions/pods'
-import { fetchPodDescribe } from '../actions/pod'
-import { fetchContainerInfo } from '../actions/containerInfo'
-import { changeThemePaletteType } from '../actions/theme'
+import { fetchContexts } from '../actions/contexts';
+import { fetchPods } from '../actions/pods';
+import { fetchPodDescribe } from '../actions/pod';
+import { fetchContainerInfo } from '../actions/containerInfo';
+import { changeThemePaletteType } from '../actions/theme';
 
 import ContextDropdown from './toolbar/ContextDropdown';
 import NamespaceDropdown from './toolbar/NamespaceDropdown';
@@ -60,32 +61,34 @@ const mapStateToProps = (state, { match }) => ({
 });
 
 class AppToolbar extends Component {
-  handleRefresh = () => {
-    const { currentContext, currentNamespace, currentPod, currentContainer, currentPage } = this.props;
+  handleRefresh() {
+    const { currentContext, currentNamespace, currentPod, currentContainer, currentPage, dispatch } = this.props;
 
-    this.props.dispatch(fetchContexts());
-    this.props.dispatch(fetchPods(currentContext));
+    dispatch(fetchContexts());
+    dispatch(fetchPods(currentContext));
 
     if (currentNamespace && currentPod) {
-      this.props.dispatch(fetchPodDescribe(currentContext, currentNamespace, currentPod));
+      dispatch(fetchPodDescribe(currentContext, currentNamespace, currentPod));
     }
 
     if (currentNamespace && currentPod && currentContainer && currentPage) {
-      this.props.dispatch(fetchContainerInfo(currentContext, currentNamespace, currentPod, currentContainer, currentPage));
+      dispatch(fetchContainerInfo(currentContext, currentNamespace, currentPod, currentContainer, currentPage));
     }
-  };
+  }
 
-  handleTogglePaletteType = () => {
-    const newTheme = this.props.uiTheme.paletteType === 'light' ? 'dark' : 'light';
+  handleTogglePaletteType() {
+    const { uiTheme, dispatch } = this.props;
+
+    const newTheme = uiTheme.paletteType === 'light' ? 'dark' : 'light';
     localStorage.setItem('uiTheme', newTheme);
-    this.props.dispatch(changeThemePaletteType(newTheme));
-  };
+    dispatch(changeThemePaletteType(newTheme));
+  }
 
   render() {
     const { classes, uiTheme } = this.props;
 
     return (
-      <MuiThemeProvider theme={createMuiTheme({palette: {type: 'dark'}})}>
+      <MuiThemeProvider theme={createMuiTheme({ palette: { type: 'dark' } })}>
         <AppBar position="sticky" className={classes.root}>
           <Toolbar>
             <Link to="/" className={classes.link}>
@@ -139,5 +142,18 @@ class AppToolbar extends Component {
     );
   }
 }
+
+AppToolbar.propTypes = {
+  classes: PropTypes.object.isRequired,
+  currentContainer: PropTypes.string,
+  currentContext: PropTypes.string.isRequired,
+  currentNamespace: PropTypes.string,
+  currentPage: PropTypes.string,
+  currentPod: PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  uiTheme: PropTypes.shape({
+    paletteType: PropTypes.string.isRequired,
+  }).isRequired,
+};
 
 export default withRouter(connect(mapStateToProps)(withStyles(styles)(AppToolbar)));

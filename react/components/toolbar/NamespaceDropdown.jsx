@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -26,44 +27,59 @@ const mapStateToProps = (state, { match }) => ({
   currentNamespace: match.params.namespace,
 });
 
-
 class NamespaceDropdown extends Component {
   componentDidMount() {
-    this.props.dispatch(fetchPods(this.props.currentContext));
+    const { currentContext, dispatch } = this.props;
+
+    dispatch(fetchPods(currentContext));
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.currentContext !== prevProps.currentContext) {
-      this.props.dispatch(fetchPods(this.props.currentContext));
+    const { currentContext, dispatch } = this.props;
+
+    if (currentContext !== prevProps.currentContext) {
+      dispatch(fetchPods(currentContext));
     }
   }
 
   render() {
-    const {classes, currentContext, currentNamespace, pods} = this.props;
+    const { classes, currentContext, currentNamespace, pods } = this.props;
 
     return (
       <FormControl className={classes.formControl}>
         <InputLabel htmlFor="namespace-dropdown">Namespace</InputLabel>
         <Select
-          value={currentNamespace || "all"}
+          value={currentNamespace || 'all'}
           inputProps={{
             name: 'namespace',
             id: 'namespace-dropdown',
           }}
         >
-          <MenuItem component={Link} to={"/" + currentContext} value="all">All</MenuItem>
+          <MenuItem component={Link} to={'/' + currentContext} value="all">All</MenuItem>
           {[...new Set(pods.items.map(pod => pod.metadata.namespace))].map(namespace => (
-            <MenuItem component={Link} to={"/" + currentContext + "/" + namespace} value={namespace} key={namespace}>
+            <MenuItem component={Link} to={'/' + currentContext + '/' + namespace} value={namespace} key={namespace}>
               {namespace}
             </MenuItem>
           ))}
           {pods.loading && currentNamespace && <MenuItem value={currentNamespace}>{currentNamespace}</MenuItem>}
-          {pods.loading && <MenuItem><CircularProgress/></MenuItem>}
+          {pods.loading && <MenuItem><CircularProgress /></MenuItem>}
           {pods.error && <MenuItem>Error!</MenuItem>}
         </Select>
       </FormControl>
     );
   }
 }
+
+NamespaceDropdown.propTypes = {
+  classes: PropTypes.object.isRequired,
+  currentContext: PropTypes.string.isRequired,
+  currentNamespace: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  pods: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.object,
+    items: PropTypes.array.isRequired,
+  }).isRequired,
+};
 
 export default withRouter(connect(mapStateToProps)(withStyles(styles)(NamespaceDropdown)));

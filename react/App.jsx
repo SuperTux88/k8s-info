@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import withRoot from './withRoot';
 
-import { fetchContexts } from './actions/contexts'
+import { fetchContexts } from './actions/contexts';
 
 import AppToolbar from './components/AppToolbar';
 
@@ -15,7 +16,9 @@ import PodDescribe from './pages/PodDescribe';
 
 class App extends Component {
   componentDidMount() {
-    this.props.dispatch(fetchContexts());
+    const { dispatch } = this.props;
+
+    dispatch(fetchContexts());
   }
 
   render() {
@@ -32,5 +35,9 @@ class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+};
 
 export default connect()(withRoot(App));

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -15,7 +16,7 @@ const State = ({ title, state, tableClassName }) => {
       <DescribeInfoRow title={title}>
         <Table className={tableClassName}>
           <TableBody>
-            <DescribeInfoRow title={capitalize(words(stateKey))}/>
+            <DescribeInfoRow title={capitalize(words(stateKey))} />
             {Object.keys(state[stateKey]).filter(key => state[stateKey][key]).map(key => (
               <DescribeInfoRow title={capitalize(words(key))} key={key}>
                 {state[stateKey][key]}
@@ -28,6 +29,12 @@ const State = ({ title, state, tableClassName }) => {
   }
 
   return (null);
+};
+
+State.propTypes = {
+  state: PropTypes.object.isRequired,
+  tableClassName: PropTypes.string,
+  title: PropTypes.string.isRequired,
 };
 
 export default State;

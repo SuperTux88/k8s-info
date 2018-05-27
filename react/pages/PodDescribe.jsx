@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -44,8 +45,8 @@ const styles = theme => ({
   },
   nestedTable: {
     width: 'auto',
-    marginTop: -theme.spacing.unit/2,
-    marginBottom: -theme.spacing.unit/2,
+    marginTop: -theme.spacing.unit / 2,
+    marginBottom: -theme.spacing.unit / 2,
   },
   nestedTableTitle: {
     height: '32px',
@@ -60,7 +61,7 @@ const styles = theme => ({
     display: 'table-row',
   },
   expansionPanelSummary: {
-    minHeight: (theme.spacing.unit * 4) + "px !important",
+    minHeight: (theme.spacing.unit * 4) + 'px !important',
     backgroundColor: darken(theme.palette.background.paper, 0.1),
   },
   expansionPanelSummaryContent: {
@@ -100,19 +101,22 @@ const mapStateToProps = (state, { match }) => ({
 });
 
 class PodDescribe extends Component {
-  fetchContent = () => {
-    const { currentContext, currentNamespace, currentPod } = this.props;
-    this.props.dispatch(fetchPodDescribe(currentContext, currentNamespace, currentPod));
-  };
+  fetchContent() {
+    const { currentContext, currentNamespace, currentPod, dispatch } = this.props;
+
+    dispatch(fetchPodDescribe(currentContext, currentNamespace, currentPod));
+  }
 
   componentDidMount() {
     this.fetchContent();
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.currentContext !== prevProps.currentContext ||
-      this.props.currentNamespace !== prevProps.currentNamespace ||
-      this.props.currentPod !== prevProps.currentPod) {
+    const { currentContext, currentNamespace, currentPod } = this.props;
+
+    if (currentContext !== prevProps.currentContext ||
+      currentNamespace !== prevProps.currentNamespace ||
+      currentPod !== prevProps.currentPod) {
       this.fetchContent();
     }
   }
@@ -123,13 +127,13 @@ class PodDescribe extends Component {
     if (pod.error) {
       return (
         <div>
-          <Error message={pod.error.message}/>
+          <Error message={pod.error.message} />
         </div>
       );
     } else if (pod.loading || !pod.pod) {
       return (
         <div>
-          <Loading/>
+          <Loading />
         </div>
       );
     } else {
@@ -139,7 +143,7 @@ class PodDescribe extends Component {
 
       let state = status.phase;
       if (metadata.deletion_timestamp) {
-        state = "Terminating";
+        state = 'Terminating';
       }
 
       return (
@@ -148,26 +152,36 @@ class PodDescribe extends Component {
             <TableBody>
               <DescribeInfoRow title="Name">{metadata.name}</DescribeInfoRow>
               <DescribeInfoRow title="Namespace">{metadata.namespace}</DescribeInfoRow>
-              <DescribeInfoRow title="Status" valueClassName={state === "Running" ? classes.ok : (state === "Failed" ? classes.error : null)}>{state}</DescribeInfoRow>
-              <DescribeInfoRow title="Node">{spec.node_name || "None"}</DescribeInfoRow>
-              <DescribeInfoRow title="Node IP">{status.host_ip || "None"}</DescribeInfoRow>
-              <DescribeInfoRow title="Pod IP">{status.pod_ip || "None"}</DescribeInfoRow>
-              {metadata.owner_references && <DescribeInfoRow title="Controlled by">{metadata.owner_references.map(ref => (
-                <div key={ref.name}>{ref.kind}/{ref.name}</div>
-              ))}</DescribeInfoRow>}
+              <DescribeInfoRow title="Status" valueClassName={state === 'Running' ? classes.ok : (state === 'Failed' ? classes.error : null)}>{state}</DescribeInfoRow>
+              <DescribeInfoRow title="Node">{spec.node_name || 'None'}</DescribeInfoRow>
+              <DescribeInfoRow title="Node IP">{status.host_ip || 'None'}</DescribeInfoRow>
+              <DescribeInfoRow title="Pod IP">{status.pod_ip || 'None'}</DescribeInfoRow>
+              {metadata.owner_references &&
+                <DescribeInfoRow title="Controlled by">
+                  {metadata.owner_references.map(ref => (
+                    <div key={ref.name}>{ref.kind}/{ref.name}</div>
+                  ))}
+                </DescribeInfoRow>
+              }
               <DescribeInfoRow title="QoS Class">{status.qos_class}</DescribeInfoRow>
-              {spec.node_selector && <DescribeInfoRow title="Node-Selectors">
-                <Table className={classes.nestedTable}>
-                  <TableBody>
-                    {Object.keys(spec.node_selector).map(key => (
-                      <DescribeInfoRow title={key} key={key}>{spec.node_selector[key]}</DescribeInfoRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </DescribeInfoRow>}
-              {spec.tolerations && <DescribeInfoRow title="Tolerations">{spec.tolerations.map(toleration => (
-                <div key={toleration.key + ":" + toleration.effect}>{toleration.key}:{toleration.effect}{toleration.toleration_seconds && " for " + toleration.toleration_seconds + "s"}</div>
-              ))}</DescribeInfoRow>}
+              {spec.node_selector &&
+                <DescribeInfoRow title="Node-Selectors">
+                  <Table className={classes.nestedTable}>
+                    <TableBody>
+                      {Object.keys(spec.node_selector).map(key => (
+                        <DescribeInfoRow title={key} key={key}>{spec.node_selector[key]}</DescribeInfoRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </DescribeInfoRow>
+              }
+              {spec.tolerations &&
+                <DescribeInfoRow title="Tolerations">
+                  {spec.tolerations.map(toleration => (
+                    <div key={toleration.key + ':' + toleration.effect}>{toleration.key}:{toleration.effect}{toleration.toleration_seconds && ' for ' + toleration.toleration_seconds + 's'}</div>
+                  ))}
+                </DescribeInfoRow>
+              }
               <DescribeInfoRow title="Labels">
                 <Table className={classes.nestedTable}>
                   <TableBody>
@@ -179,7 +193,7 @@ class PodDescribe extends Component {
               </DescribeInfoRow>
               <DescribeInfoRow title="Containers">
                 {spec.containers.map(container => {
-                  const linkPrefix = "/" + currentContext + "/" + metadata.namespace + "/" + metadata.name + "/" + container.name + "/";
+                  const linkPrefix = '/' + currentContext + '/' + metadata.namespace + '/' + metadata.name + '/' + container.name + '/';
                   const containerStatus = status.container_statuses.find(status => status.name === container.name);
 
                   const readyClasses = [classes.expansionPanelSummaryContentInfo];
@@ -192,17 +206,17 @@ class PodDescribe extends Component {
                   return (
                     <ExpansionPanel className={classes.expansionPanel} key={container.name} defaultExpanded={spec.containers.length === 1}>
                       <ExpansionPanelSummary className={classes.expansionPanelSummary} expandIcon={<ExpandMoreIcon />}>
-                        <div style={{width: '100%'}} className={classes.expansionPanelSummaryContent}>
+                        <div style={{ width: '100%' }} className={classes.expansionPanelSummaryContent}>
                           <Typography className={classes.expansionPanelSummaryContentInfo}>{container.name}</Typography>
-                          <Typography className={readyClasses.join(' ')}>{containerStatus.ready ? "Ready" : "Not Ready"}</Typography>
-                          <Typography className={[classes.expansionPanelSummaryContentInfo, containerStatus.restart_count === 0 ? classes.ok : classes.error].join(' ')}>{containerStatus.restart_count + " Restarts"}</Typography>
+                          <Typography className={readyClasses.join(' ')}>{containerStatus.ready ? 'Ready' : 'Not Ready'}</Typography>
+                          <Typography className={[classes.expansionPanelSummaryContentInfo, containerStatus.restart_count === 0 ? classes.ok : classes.error].join(' ')}>{containerStatus.restart_count + ' Restarts'}</Typography>
                         </div>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails className={classes.expansionPanelDetails}>
                         <div className={classes.buttons}>
-                          <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + "log"}>Log</Button>
-                          <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + "ps"}>Processes</Button>
-                          <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + "env"}>Env</Button>
+                          <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'log'}>Log</Button>
+                          <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'ps'}>Processes</Button>
+                          <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'env'}>Env</Button>
                         </div>
                         <div>
                           <Table className={classes.nestedTable}>
@@ -210,26 +224,28 @@ class PodDescribe extends Component {
                               <DescribeInfoRow title="Container ID">{containerStatus.container_id}</DescribeInfoRow>
                               <DescribeInfoRow title="Image">{containerStatus.image}</DescribeInfoRow>
                               <DescribeInfoRow title="Image ID">{containerStatus.image_id}</DescribeInfoRow>
-                              {container.ports.length > 0 && <DescribeInfoRow title="Ports">
-                                <Table className={classes.nestedTable}>
-                                  <TableHead>
-                                    <TableRow className={classes.nestedTableTitle}>
-                                      <CompactTableCell>Port</CompactTableCell>
-                                      <CompactTableCell>Host Port</CompactTableCell>
-                                      <CompactTableCell>Protocol</CompactTableCell>
-                                    </TableRow>
-                                  </TableHead>
-                                  <TableBody>
-                                    {container.ports.map(port => (
-                                      <TableRow className={classes.nestedTableRow} key={port.container_port + port.protocol}>
-                                        <CompactTableCell>{port.container_port}</CompactTableCell>
-                                        <CompactTableCell>{port.host_port || "None"}</CompactTableCell>
-                                        <CompactTableCell>{port.protocol}</CompactTableCell>
+                              {container.ports.length > 0 &&
+                                <DescribeInfoRow title="Ports">
+                                  <Table className={classes.nestedTable}>
+                                    <TableHead>
+                                      <TableRow className={classes.nestedTableTitle}>
+                                        <CompactTableCell>Port</CompactTableCell>
+                                        <CompactTableCell>Host Port</CompactTableCell>
+                                        <CompactTableCell>Protocol</CompactTableCell>
                                       </TableRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                              </DescribeInfoRow>}
+                                    </TableHead>
+                                    <TableBody>
+                                      {container.ports.map(port => (
+                                        <TableRow className={classes.nestedTableRow} key={port.container_port + port.protocol}>
+                                          <CompactTableCell>{port.container_port}</CompactTableCell>
+                                          <CompactTableCell>{port.host_port || 'None'}</CompactTableCell>
+                                          <CompactTableCell>{port.protocol}</CompactTableCell>
+                                        </TableRow>
+                                      ))}
+                                    </TableBody>
+                                  </Table>
+                                </DescribeInfoRow>
+                              }
                               <State title="State" state={containerStatus.state} tableClassName={classes.nestedTable} />
                               <State title="Last State" state={containerStatus.last_state} tableClassName={classes.nestedTable} />
                               <Resources title="Requests" resources={container.resources.requests} tableClassName={classes.nestedTable} />
@@ -262,7 +278,7 @@ class PodDescribe extends Component {
                         </div>
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
-                  )
+                  );
                 })}
               </DescribeInfoRow>
               <DescribeInfoRow title="Volumes">
@@ -283,7 +299,7 @@ class PodDescribe extends Component {
                         </Table>
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
-                  )
+                  );
                 })}
               </DescribeInfoRow>
               <DescribeInfoRow title="Conditions">
@@ -305,29 +321,31 @@ class PodDescribe extends Component {
                 </Table>
               </DescribeInfoRow>
               <DescribeInfoRow title="Events">
-                {pod.pod.events.length == 0 && "None"}
-                {pod.pod.events.length > 0 && <Table className={classes.nestedTable}>
-                  <TableHead>
-                    <TableRow className={classes.nestedTableTitle}>
-                      <CompactTableCell>Type</CompactTableCell>
-                      <CompactTableCell>Reason</CompactTableCell>
-                      <CompactTableCell numeric>Age</CompactTableCell>
-                      <CompactTableCell>From</CompactTableCell>
-                      <CompactTableCell>Message</CompactTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {pod.pod.events.map(event => (
-                      <TableRow className={classes.nestedTableRow} key={event.reason + event.message}>
-                        <CompactTableCell>{event.type}</CompactTableCell>
-                        <CompactTableCell>{event.reason}</CompactTableCell>
-                        <CompactTableCell numeric>{event.metadata.age}</CompactTableCell>
-                        <CompactTableCell>{event.source.component}{event.source.host && ", " + event.source.host}</CompactTableCell>
-                        <CompactTableCell>{event.message}</CompactTableCell>
+                {pod.pod.events.length === 0 && 'None'}
+                {pod.pod.events.length > 0 &&
+                  <Table className={classes.nestedTable}>
+                    <TableHead>
+                      <TableRow className={classes.nestedTableTitle}>
+                        <CompactTableCell>Type</CompactTableCell>
+                        <CompactTableCell>Reason</CompactTableCell>
+                        <CompactTableCell numeric>Age</CompactTableCell>
+                        <CompactTableCell>From</CompactTableCell>
+                        <CompactTableCell>Message</CompactTableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>}
+                    </TableHead>
+                    <TableBody>
+                      {pod.pod.events.map(event => (
+                        <TableRow className={classes.nestedTableRow} key={event.reason + event.message}>
+                          <CompactTableCell>{event.type}</CompactTableCell>
+                          <CompactTableCell>{event.reason}</CompactTableCell>
+                          <CompactTableCell numeric>{event.metadata.age}</CompactTableCell>
+                          <CompactTableCell>{event.source.component}{event.source.host && ', ' + event.source.host}</CompactTableCell>
+                          <CompactTableCell>{event.message}</CompactTableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                }
               </DescribeInfoRow>
             </TableBody>
           </Table>
@@ -336,5 +354,18 @@ class PodDescribe extends Component {
     }
   }
 }
+
+PodDescribe.propTypes = {
+  classes: PropTypes.object.isRequired,
+  currentContext: PropTypes.string.isRequired,
+  currentNamespace: PropTypes.string,
+  currentPod: PropTypes.string,
+  dispatch: PropTypes.func.isRequired,
+  pod: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.object,
+    pod: PropTypes.object,
+  }).isRequired,
+};
 
 export default withRouter(connect(mapStateToProps)(withStyles(styles)(PodDescribe)));

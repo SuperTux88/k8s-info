@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -15,11 +16,14 @@ const styles = {
   },
 };
 
-
 const K8sLogoHeader = ({ classes }) => (
   <div className={classes.header}>
     <img src="/static/images/favicon.png" className={classes.logo} alt="k8s-logo" />
   </div>
 );
+
+K8sLogoHeader.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 
 export default withStyles(styles)(K8sLogoHeader);

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -23,5 +24,9 @@ const Loading = ({ classes }) => (
     <CircularProgress size={50} />
   </div>
 );
+
+Loading.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 
 export default withStyles(styles)(Loading);

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Typography from '@material-ui/core/Typography';
 
@@ -17,5 +18,10 @@ const Error = ({ classes, message }) => (
     </Typography>
   </div>
 );
+
+Error.propTypes = {
+  classes: PropTypes.object.isRequired,
+  message: PropTypes.string.isRequired,
+};
 
 export default withStyles(styles)(Error);

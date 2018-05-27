@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -25,39 +26,37 @@ const styles = {
   },
 };
 
-const mapStateToProps = state => ({
-  contexts: state.contexts
-});
+const mapStateToProps = state => ({ contexts: state.contexts });
 
 const Index = ({ classes, contexts, history }) => {
   if (contexts.loading) {
     return (
       <div>
-        <K8sLogoHeader/>
-        <Loading/>
+        <K8sLogoHeader />
+        <Loading />
       </div>
     );
   } else if (contexts.error) {
     return (
       <div>
-        <K8sLogoHeader/>
-        <Error message={contexts.error.message}/>
+        <K8sLogoHeader />
+        <Error message={contexts.error.message} />
       </div>
     );
   } else {
     if (contexts.items.length === 1) {
-      history.push("/" + contexts.items[0])
+      history.push('/' + contexts.items[0]);
     }
 
     return (
       <div>
-        <K8sLogoHeader/>
+        <K8sLogoHeader />
         <div className={classes.root}>
           <List subheader={<ListSubheader>Context</ListSubheader>}>
             {contexts.items.map(context => (
-              <ListItem button component={Link} to={"/" + context} key={context}>
-                <Avatar><ContextIcon/></Avatar>
-                <ListItemText primary={context}/>
+              <ListItem button component={Link} to={'/' + context} key={context}>
+                <Avatar><ContextIcon /></Avatar>
+                <ListItemText primary={context} />
               </ListItem>
             ))}
           </List>
@@ -65,6 +64,16 @@ const Index = ({ classes, contexts, history }) => {
       </div>
     );
   }
+};
+
+Index.propTypes = {
+  classes: PropTypes.object.isRequired,
+  contexts: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.object,
+    items: PropTypes.array.isRequired,
+  }).isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default withRouter(connect(mapStateToProps)(withStyles(styles)(Index)));

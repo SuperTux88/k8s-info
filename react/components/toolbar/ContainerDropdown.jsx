@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -40,7 +41,7 @@ const ContainerDropdown = ({ classes, currentContext, currentNamespace, currentP
         }}
       >
         {pod && pod.status.container_statuses.map(container => (
-          <MenuItem component={Link} to={"/" + currentContext + "/" + currentNamespace + "/" + currentPod + "/" + container.name + "/" + currentPage} value={container.name} key={container.name}>
+          <MenuItem component={Link} to={'/' + currentContext + '/' + currentNamespace + '/' + currentPod + '/' + container.name + '/' + currentPage} value={container.name} key={container.name}>
             {container.name}
           </MenuItem>
         ))}
@@ -48,6 +49,20 @@ const ContainerDropdown = ({ classes, currentContext, currentNamespace, currentP
       </Select>
     </FormControl>
   );
+};
+
+ContainerDropdown.propTypes = {
+  classes: PropTypes.object.isRequired,
+  currentContainer: PropTypes.string.isRequired,
+  currentContext: PropTypes.string.isRequired,
+  currentNamespace: PropTypes.string.isRequired,
+  currentPage: PropTypes.string.isRequired,
+  currentPod: PropTypes.string.isRequired,
+  pods: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.object,
+    items: PropTypes.array.isRequired,
+  }).isRequired,
 };
 
 export default withRouter(connect(mapStateToProps)(withStyles(styles)(ContainerDropdown)));

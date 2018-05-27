@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -26,7 +27,7 @@ const mapStateToProps = (state, { match }) => ({
 });
 
 const PageDropdown = ({ classes, currentContext, currentNamespace, currentPod, currentContainer, currentPage }) => {
-  const linkPrefix = "/" + currentContext + "/" + currentNamespace + "/" + currentPod + "/" + currentContainer + "/";
+  const linkPrefix = '/' + currentContext + '/' + currentNamespace + '/' + currentPod + '/' + currentContainer + '/';
 
   return (
     <FormControl className={classes.formControl}>
@@ -38,12 +39,21 @@ const PageDropdown = ({ classes, currentContext, currentNamespace, currentPod, c
           id: 'page-dropdown',
         }}
       >
-        <MenuItem component={Link} to={linkPrefix + "log"} value="log">Log</MenuItem>
-        <MenuItem component={Link} to={linkPrefix + "ps"} value="ps">Processes</MenuItem>
-        <MenuItem component={Link} to={linkPrefix + "env"} value="env">Env</MenuItem>
+        <MenuItem component={Link} to={linkPrefix + 'log'} value="log">Log</MenuItem>
+        <MenuItem component={Link} to={linkPrefix + 'ps'} value="ps">Processes</MenuItem>
+        <MenuItem component={Link} to={linkPrefix + 'env'} value="env">Env</MenuItem>
       </Select>
     </FormControl>
   );
+};
+
+PageDropdown.propTypes = {
+  classes: PropTypes.object.isRequired,
+  currentContainer: PropTypes.string.isRequired,
+  currentContext: PropTypes.string.isRequired,
+  currentNamespace: PropTypes.string.isRequired,
+  currentPage: PropTypes.string.isRequired,
+  currentPod: PropTypes.string.isRequired,
 };
 
 export default withRouter(connect(mapStateToProps)(withStyles(styles)(PageDropdown)));

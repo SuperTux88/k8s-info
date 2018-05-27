@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -35,7 +36,7 @@ const ContextDropdown = ({ classes, currentContext, contexts }) => {
         }}
       >
         {contexts.items.map(context => (
-          <MenuItem component={Link} to={"/" + context} value={context} key={context}>
+          <MenuItem component={Link} to={'/' + context} value={context} key={context}>
             {context}
           </MenuItem>
         ))}
@@ -45,6 +46,16 @@ const ContextDropdown = ({ classes, currentContext, contexts }) => {
       </Select>
     </FormControl>
   );
+};
+
+ContextDropdown.propTypes = {
+  classes: PropTypes.object.isRequired,
+  contexts: PropTypes.shape({
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.object,
+    items: PropTypes.array.isRequired,
+  }).isRequired,
+  currentContext: PropTypes.string.isRequired,
 };
 
 export default withRouter(connect(mapStateToProps)(withStyles(styles)(ContextDropdown)));
