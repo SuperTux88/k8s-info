@@ -5,8 +5,8 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 
-import { loadProgressBar } from 'axios-progress-bar'
-import 'axios-progress-bar/dist/nprogress.css'
+import { loadProgressBar } from 'axios-progress-bar';
+import 'axios-progress-bar/dist/nprogress.css';
 
 import App from './App';
 

@@ -1,0 +1,29 @@
+version: "2"
+
+checks:
+  argument-count:
+    config:
+      threshold: 6
+  method-lines:
+    config:
+      threshold: 100
+  similar-code:
+    enabled: false
+
+plugins:
+  eslint:
+    enabled: true
+    config:
+      config: .eslintrc.json
+      extensions:
+      - .js
+      - .jsx
+      ignore_path: .gitignore
+  pep8:
+    enabled: true
+
+exclude_patterns:
+  - ".venv"
+  - "app/static/js/*.*.js"
+  - "node_modules"
+  - "react/reducers"

@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// eslint-disable-next-line no-multi-spaces
 export const FETCH_POD_DESCRIBE_BEGIN   = 'FETCH_POD_DESCRIBE_BEGIN';
 export const FETCH_POD_DESCRIBE_SUCCESS = 'FETCH_POD_DESCRIBE_SUCCESS';
 export const FETCH_POD_DESCRIBE_FAILURE = 'FETCH_POD_DESCRIBE_FAILURE';

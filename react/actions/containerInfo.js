@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// eslint-disable-next-line no-multi-spaces
 export const FETCH_CONTAINER_INFO_BEGIN   = 'FETCH_CONTAINER_INFO_BEGIN';
 export const FETCH_CONTAINER_INFO_SUCCESS = 'FETCH_CONTAINER_INFO_SUCCESS';
 export const FETCH_CONTAINER_INFO_FAILURE = 'FETCH_CONTAINER_INFO_FAILURE';

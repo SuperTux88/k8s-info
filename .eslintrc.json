@@ -1,0 +1,53 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "extends": [
+    "semistandard",
+    "plugin:react/all",
+    "plugin:jsx-a11y/recommended"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "jsx-a11y"
+  ],
+  "rules": {
+    "array-bracket-spacing": ["error", "never"],
+    "comma-dangle": ["error", {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "never",
+        "exports": "never",
+        "functions": "never"
+    }],
+    "linebreak-style": ["error", "unix"],
+    "object-curly-spacing": ["error", "always"],
+    "space-before-function-paren": ["error", {
+        "anonymous": "always",
+        "named": "never",
+        "asyncArrow": "always"
+    }],
+
+    "react/forbid-component-props": "off",
+    "react/forbid-prop-types": "off",
+    "react/jsx-indent": ["error", 2],
+    "react/jsx-indent-props": ["error", 2],
+    "react/jsx-max-depth": "off",
+    "react/jsx-max-props-per-line": ["error", {"when": "multiline"}],
+    "react/jsx-no-literals": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-sort-props": "off",
+    "react/no-set-state": "off",
+    "react/require-default-props": "off",
+    "react/sort-comp": "off",
+    "react/require-optimization": "off"
+  }
+}
