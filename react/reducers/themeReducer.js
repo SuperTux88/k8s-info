@@ -5,7 +5,7 @@ const initialState = {
 };
 
 export default function themeReducer(state = initialState, action) {
-  switch(action.type) {
+  switch (action.type) {
     case CHANGE_THEME_PALETTE_TYPE:
       return {
         paletteType: action.payload.paletteType,

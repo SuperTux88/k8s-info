@@ -1,6 +1,6 @@
 export const camelCase = (string) => {
-  return string.replace (/(?:^|[-_])(\w)/g, function (_, c) {
-    return c ? c.toUpperCase () : '';
+  return string.replace(/(?:^|[-_])(\w)/g, function (_, c) {
+    return c ? c.toUpperCase() : '';
   });
 };
 
@@ -9,9 +9,9 @@ export const capitalize = (string) => {
 };
 
 export const words = (string) => {
-  return string.replace(/_/g, " ")
+  return string.replace(/_/g, ' ');
 };
 
 export const boolean = (value) => {
-  return value ? "True" : "False"
-}
+  return value ? 'True' : 'False';
+};

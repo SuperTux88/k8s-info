@@ -5,24 +5,24 @@ export const FETCH_POD_DESCRIBE_SUCCESS = 'FETCH_POD_DESCRIBE_SUCCESS';
 export const FETCH_POD_DESCRIBE_FAILURE = 'FETCH_POD_DESCRIBE_FAILURE';
 
 export const fetchPodDescribeBegin = () => ({
-  type: FETCH_POD_DESCRIBE_BEGIN
+  type: FETCH_POD_DESCRIBE_BEGIN,
 });
 
 export const fetchPodDescribeSuccess = pod => ({
   type: FETCH_POD_DESCRIBE_SUCCESS,
-  payload: { pod }
+  payload: { pod },
 });
 
 export const fetchPodDescribeError = error => ({
   type: FETCH_POD_DESCRIBE_FAILURE,
-  payload: { error }
+  payload: { error },
 });
 
 export function fetchPodDescribe(context, namespace, pod) {
   return dispatch => {
     dispatch(fetchPodDescribeBegin());
-    axios.get("/api/context/" + context + "/namespace/" + namespace + "/pod/" + pod + "/describe")
-      .then(res => dispatch(fetchPodDescribeSuccess(res.data || "No content!")))
+    axios.get('/api/context/' + context + '/namespace/' + namespace + '/pod/' + pod + '/describe')
+      .then(res => dispatch(fetchPodDescribeSuccess(res.data)))
       .catch(error => dispatch(fetchPodDescribeError(error)));
   };
 }

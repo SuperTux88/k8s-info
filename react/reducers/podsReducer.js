@@ -7,23 +7,23 @@ import {
 const initialState = {
   items: [],
   loading: false,
-  error: null
+  error: null,
 };
 
 export default function podsReducer(state = initialState, action) {
-  switch(action.type) {
+  switch (action.type) {
     case FETCH_PODS_BEGIN:
       return {
         ...state,
         loading: true,
-        error: null
+        error: null,
       };
 
     case FETCH_PODS_SUCCESS:
       return {
         ...state,
         loading: false,
-        items: action.payload.pods
+        items: action.payload.pods,
       };
 
     case FETCH_PODS_FAILURE:

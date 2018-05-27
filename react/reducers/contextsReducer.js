@@ -7,23 +7,23 @@ import {
 const initialState = {
   items: [],
   loading: false,
-  error: null
+  error: null,
 };
 
 export default function contextsReducer(state = initialState, action) {
-  switch(action.type) {
+  switch (action.type) {
     case FETCH_CONTEXTS_BEGIN:
       return {
         ...state,
         loading: true,
-        error: null
+        error: null,
       };
 
     case FETCH_CONTEXTS_SUCCESS:
       return {
         ...state,
         loading: false,
-        items: action.payload.contexts
+        items: action.payload.contexts,
       };
 
     case FETCH_CONTEXTS_FAILURE:

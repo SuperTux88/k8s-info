@@ -7,23 +7,23 @@ import {
 const initialState = {
   content: null,
   loading: false,
-  error: null
+  error: null,
 };
 
 export default function containerInfoReducer(state = initialState, action) {
-  switch(action.type) {
+  switch (action.type) {
     case FETCH_CONTAINER_INFO_BEGIN:
       return {
         ...state,
         loading: true,
-        error: null
+        error: null,
       };
 
     case FETCH_CONTAINER_INFO_SUCCESS:
       return {
         ...state,
         loading: false,
-        content: action.payload.content
+        content: action.payload.content,
       };
 
     case FETCH_CONTAINER_INFO_FAILURE:
