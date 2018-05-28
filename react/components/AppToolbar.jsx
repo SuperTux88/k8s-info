@@ -61,7 +61,7 @@ const mapStateToProps = (state, { match }) => ({
 });
 
 class AppToolbar extends Component {
-  handleRefresh() {
+  handleRefresh = () => {
     const { currentContext, currentNamespace, currentPod, currentContainer, currentPage, dispatch } = this.props;
 
     dispatch(fetchContexts());
@@ -76,7 +76,7 @@ class AppToolbar extends Component {
     }
   }
 
-  handleTogglePaletteType() {
+  handleTogglePaletteType = () => {
     const { uiTheme, dispatch } = this.props;
 
     const newTheme = uiTheme.paletteType === 'light' ? 'dark' : 'light';

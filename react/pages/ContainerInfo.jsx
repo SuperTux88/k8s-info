@@ -56,7 +56,7 @@ class ContainerInfo extends Component {
     };
   }
 
-  handleWrapChange(event) {
+  handleWrapChange = event => {
     localStorage.setItem('wrapTextOutput', event.target.checked);
     this.setState({ wrapped: event.target.checked });
   }
