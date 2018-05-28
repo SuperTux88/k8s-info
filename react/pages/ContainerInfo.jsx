@@ -115,7 +115,7 @@ class ContainerInfo extends Component {
                 label="Wrap output"
                 className={classes.switch}
               />
-              <Typography component='pre' className={classes.pre} style={wrapped ? { whiteSpace: 'pre-wrap' } : {}}>
+              <Typography component='pre' className={classes.pre} style={wrapped ? { whiteSpace: 'pre-wrap', wordBreak: 'break-all' } : {}}>
                 {containerInfo.content}
               </Typography>
             </div>
