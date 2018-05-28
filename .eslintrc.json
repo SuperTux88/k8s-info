@@ -18,7 +18,8 @@
   },
   "plugins": [
     "react",
-    "jsx-a11y"
+    "jsx-a11y",
+    "babel"
   ],
   "rules": {
     "array-bracket-spacing": ["error", "never"],
@@ -49,6 +50,8 @@
     "react/no-set-state": "off",
     "react/require-default-props": "off",
     "react/sort-comp": "off",
-    "react/require-optimization": "off"
+    "react/require-optimization": "off",
+
+    "babel/semi": ["error", "always"]
   }
 }

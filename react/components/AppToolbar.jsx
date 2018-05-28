@@ -74,7 +74,7 @@ class AppToolbar extends Component {
     if (currentNamespace && currentPod && currentContainer && currentPage) {
       dispatch(fetchContainerInfo(currentContext, currentNamespace, currentPod, currentContainer, currentPage));
     }
-  }
+  };
 
   handleTogglePaletteType = () => {
     const { uiTheme, dispatch } = this.props;
@@ -82,7 +82,7 @@ class AppToolbar extends Component {
     const newTheme = uiTheme.paletteType === 'light' ? 'dark' : 'light';
     localStorage.setItem('uiTheme', newTheme);
     dispatch(changeThemePaletteType(newTheme));
-  }
+  };
 
   render() {
     const { classes, uiTheme } = this.props;

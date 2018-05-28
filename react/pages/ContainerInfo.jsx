@@ -59,7 +59,7 @@ class ContainerInfo extends Component {
   handleWrapChange = event => {
     localStorage.setItem('wrapTextOutput', event.target.checked);
     this.setState({ wrapped: event.target.checked });
-  }
+  };
 
   fetchContent() {
     const { context, namespace, pod, container, page, dispatch } = this.props;
