@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
+import qs from 'query-string';
 
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -68,10 +69,11 @@ const styles = theme => ({
   },
 });
 
-const mapStateToProps = (state, { match }) => ({
+const mapStateToProps = (state, { match, location }) => ({
   pods: state.pods,
   currentContext: match.params.context,
   currentNamespace: match.params.namespace,
+  filter: qs.parse(location.search).filter,
 });
 
 class PodList extends Component {
@@ -83,8 +85,19 @@ class PodList extends Component {
     }
   }
 
+  filterPods() {
+    const { pods, currentNamespace, filter } = this.props;
+    const displayedPods = pods.items.filter(pod => (!currentNamespace || pod.metadata.namespace === currentNamespace));
+
+    if (filter) {
+      return displayedPods.filter(pod => pod.metadata.name.startsWith(filter));
+    }
+
+    return displayedPods;
+  }
+
   render() {
-    const { classes, currentContext, currentNamespace, pods } = this.props;
+    const { classes, currentContext, pods } = this.props;
 
     if (pods.loading) {
       return (
@@ -113,7 +126,7 @@ class PodList extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {pods.items.filter(pod => (!currentNamespace || pod.metadata.namespace === currentNamespace)).map(pod => {
+              {this.filterPods().map(pod => {
                 const namespace = pod.metadata.namespace;
                 const podName = pod.metadata.name;
                 const podLink = '/' + currentContext + '/' + namespace + '/' + podName;
@@ -199,6 +212,7 @@ PodList.propTypes = {
   currentContext: PropTypes.string.isRequired,
   currentNamespace: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
+  filter: PropTypes.string,
   pods: PropTypes.shape({
     loading: PropTypes.bool.isRequired,
     error: PropTypes.object,

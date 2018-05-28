@@ -73,7 +73,7 @@ class NamespaceDropdown extends Component {
 NamespaceDropdown.propTypes = {
   classes: PropTypes.object.isRequired,
   currentContext: PropTypes.string.isRequired,
-  currentNamespace: PropTypes.string.isRequired,
+  currentNamespace: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
   pods: PropTypes.shape({
     loading: PropTypes.bool.isRequired,
