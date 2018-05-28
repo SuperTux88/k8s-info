@@ -3,6 +3,8 @@
 
 [![license](https://img.shields.io/github/license/SuperTux88/k8s-info.svg)](https://github.com/SuperTux88/k8s-info/blob/master/LICENSE)
 [![Docker Build Status](https://img.shields.io/docker/build/supertux88/k8s-info.svg)](https://hub.docker.com/r/supertux88/k8s-info)
+[![Maintainability](https://api.codeclimate.com/v1/badges/6e4c0924a999c3c85b04/maintainability)](https://codeclimate.com/github/SuperTux88/k8s-info/maintainability)
+
 [![python Requirements Status](https://requires.io/github/SuperTux88/k8s-info/requirements.svg?branch=master)](https://requires.io/github/SuperTux88/k8s-info/requirements/?branch=master)
 [![npm dependencies Status](https://david-dm.org/SuperTux88/k8s-info/status.svg)](https://david-dm.org/SuperTux88/k8s-info)
 [![npm dev dependencies Status](https://david-dm.org/SuperTux88/k8s-info/dev-status.svg)](https://david-dm.org/SuperTux88/k8s-info?type=dev)
