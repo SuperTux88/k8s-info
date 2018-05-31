@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, abort, Response
+from flask import Blueprint, jsonify, abort, Response, request
 import json
 from kubernetes import client, config
 from kubernetes.stream import stream
@@ -130,7 +130,9 @@ def describe(context, namespace, pod):
 
 @api.route('/context/<string:context>/namespace/<string:namespace>/pod/<string:pod>/container/<string:container>/log')
 def log(context, namespace, pod, container):
-    ret = get_client(context).read_namespaced_pod_log(pod, namespace, container=container, tail_lines=1000)
+    previous = request.args.get('previous') == "true"
+    ret = get_client(context).read_namespaced_pod_log(pod, namespace, container=container,
+                                                      tail_lines=1000, previous=previous)
 
     return Response(ret, mimetype='text/plain')
 
