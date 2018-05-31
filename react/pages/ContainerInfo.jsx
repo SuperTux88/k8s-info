@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -15,15 +14,10 @@ import { darken } from '@material-ui/core/styles/colorManipulator';
 
 import { fetchContainerInfo } from '../actions/containerInfo';
 
-import Loading from '../components/Loading';
-import Error from '../components/Error';
+import LoadingPage from '../components/LoadingPage';
 import DescribeInfoRow from '../components/describe/DescribeInfoRow';
 
 const styles = theme => ({
-  root: {
-    margin: theme.spacing.unit * 3,
-    padding: theme.spacing.unit * 2,
-  },
   switch: {
     marginTop: -theme.spacing.unit,
   },
@@ -84,56 +78,46 @@ class ContainerInfo extends Component {
   }
 
   render() {
-    const { classes, containerInfo } = this.props;
+    const { classes, page, container, containerInfo } = this.props;
     const { wrapped } = this.state;
 
-    if (containerInfo.error) {
-      return (
-        <div>
-          <Error message={containerInfo.error.message} />
-        </div>
-      );
-    } else if (containerInfo.loading || !containerInfo.content) {
-      return (
-        <div>
-          <Loading />
-        </div>
-      );
-    } else {
-      return (
-        <Paper className={classes.root}>
-          {typeof containerInfo.content === 'string' &&
-            <div>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={wrapped}
-                    onChange={this.handleWrapChange}
-                    color="primary"
-                  />
-                }
-                label="Wrap output"
-                className={classes.switch}
-              />
-              <Typography component='pre' className={classes.pre} style={wrapped ? { whiteSpace: 'pre-wrap', wordBreak: 'break-all' } : {}}>
-                {containerInfo.content}
-              </Typography>
-            </div>
-          }
-          {typeof containerInfo.content === 'object' &&
-            <Table>
-              <TableBody>
-                {Object.keys(containerInfo.content).map(key => (
-                  <DescribeInfoRow title={key} key={key} className={classes.row}>
-                    {containerInfo.content[key]}
-                  </DescribeInfoRow>
-                ))}
-              </TableBody>
-            </Table>
-          }
-        </Paper>
-      );
-    }
+    return (
+      <LoadingPage
+        loading={containerInfo.loading || !containerInfo.content}
+        error={containerInfo.error}
+        title={page + ': ' + container}
+      >
+        {containerInfo.content && typeof containerInfo.content === 'string' &&
+          <div>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={wrapped}
+                  onChange={this.handleWrapChange}
+                  color="primary"
+                />
+              }
+              label="Wrap output"
+              className={classes.switch}
+            />
+            <Typography component='pre' className={classes.pre} style={wrapped ? { whiteSpace: 'pre-wrap', wordBreak: 'break-all' } : {}}>
+              {containerInfo.content}
+            </Typography>
+          </div>
+        }
+        {containerInfo.content && typeof containerInfo.content === 'object' &&
+          <Table>
+            <TableBody>
+              {Object.keys(containerInfo.content).map(key => (
+                <DescribeInfoRow title={key} key={key} className={classes.row}>
+                  {containerInfo.content[key]}
+                </DescribeInfoRow>
+              ))}
+            </TableBody>
+          </Table>
+        }
+      </LoadingPage>
+    );
   }
 }
 

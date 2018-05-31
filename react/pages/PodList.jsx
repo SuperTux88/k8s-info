@@ -5,7 +5,6 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import qs from 'query-string';
 
-import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
@@ -19,13 +18,13 @@ import get from 'lodash/get';
 
 import { fetchPods } from '../actions/pods';
 
-import Loading from '../components/Loading';
-import Error from '../components/Error';
+import LoadingPage from '../components/LoadingPage';
 import CompactTableCell from '../components/CompactTableCell';
 
 const styles = theme => ({
   root: {
-    margin: theme.spacing.unit * 3,
+    margin: -theme.spacing.unit * 2,
+    marginTop: -theme.spacing.unit,
   },
   row: {
     '&:nth-of-type(odd)': {
@@ -97,23 +96,15 @@ class PodList extends Component {
   }
 
   render() {
-    const { classes, currentContext, pods } = this.props;
+    const { classes, currentContext, currentNamespace, pods } = this.props;
 
-    if (pods.loading) {
-      return (
-        <div>
-          <Loading />
-        </div>
-      );
-    } else if (pods.error) {
-      return (
-        <div>
-          <Error message={pods.error.message} />
-        </div>
-      );
-    } else {
-      return (
-        <Paper className={classes.root}>
+    return (
+      <LoadingPage
+        loading={pods.loading}
+        error={pods.error}
+        title={'Pod list: ' + currentContext + (currentNamespace ? ' / ' + currentNamespace : '')}
+      >
+        <div className={classes.root}>
           <Table>
             <TableHead>
               <TableRow>
@@ -201,9 +192,9 @@ class PodList extends Component {
               })}
             </TableBody>
           </Table>
-        </Paper>
-      );
-    }
+        </div>
+      </LoadingPage>
+    );
   }
 }
 
