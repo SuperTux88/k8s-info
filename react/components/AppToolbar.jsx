@@ -30,6 +30,7 @@ import NamespaceDropdown from './toolbar/NamespaceDropdown';
 import PodDropdown from './toolbar/PodDropdown';
 import ContainerDropdown from './toolbar/ContainerDropdown';
 import PageDropdown from './toolbar/PageDropdown';
+import Search from './toolbar/Search';
 
 const styles = theme => ({
   root: {
@@ -48,6 +49,8 @@ const styles = theme => ({
   headerMenu: {
     flex: 1,
     marginLeft: theme.spacing.unit * 2,
+    display: 'flex',
+    alignItems: 'center',
   },
 });
 
@@ -104,6 +107,8 @@ class AppToolbar extends Component {
               <Route path="/:context/:namespace/:pod/:container/:page" component={ContainerDropdown} />
               <Route path="/:context/:namespace/:pod/:container/:page" component={PageDropdown} />
             </div>
+
+            <Route exact path="/:context/:namespace?" component={Search} />
 
             <Tooltip id="appbar-refresh" title="Refresh Data" enterDelay={300}>
               <IconButton
