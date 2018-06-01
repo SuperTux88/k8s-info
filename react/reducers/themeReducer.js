@@ -7,6 +7,7 @@ const initialState = {
 export default function themeReducer(state = initialState, action) {
   switch (action.type) {
     case CHANGE_THEME_PALETTE_TYPE:
+      localStorage.setItem('uiTheme', action.payload.paletteType);
       return {
         paletteType: action.payload.paletteType,
       };

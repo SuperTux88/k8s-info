@@ -5,7 +5,8 @@ import {
 } from '../actions/containerInfo';
 
 const initialState = {
-  content: null,
+  content: '',
+  data: {},
   loading: false,
   error: null,
 };
@@ -23,12 +24,14 @@ export default function containerInfoReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        content: action.payload.content,
+        content: action.payload.content || '',
+        data: action.payload.data || {},
       };
 
     case FETCH_CONTAINER_INFO_FAILURE:
       return {
-        content: null,
+        content: '',
+        data: {},
         loading: false,
         error: action.payload.error,
       };

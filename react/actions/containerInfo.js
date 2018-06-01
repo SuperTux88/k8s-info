@@ -9,9 +9,9 @@ export const fetchContainerInfoBegin = () => ({
   type: FETCH_CONTAINER_INFO_BEGIN,
 });
 
-export const fetchContainerInfoSuccess = content => ({
+export const fetchContainerInfoSuccess = data => ({
   type: FETCH_CONTAINER_INFO_SUCCESS,
-  payload: { content },
+  payload: typeof data === 'string' ? { content: data } : { data },
 });
 
 export const fetchContainerInfoError = error => ({

@@ -83,7 +83,6 @@ class AppToolbar extends Component {
     const { uiTheme, dispatch } = this.props;
 
     const newTheme = uiTheme.paletteType === 'light' ? 'dark' : 'light';
-    localStorage.setItem('uiTheme', newTheme);
     dispatch(changeThemePaletteType(newTheme));
   };
 

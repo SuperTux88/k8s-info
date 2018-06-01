@@ -57,16 +57,14 @@ const styles = theme => ({
 
 /* eslint-disable react/no-multi-comp */
 
-const SearchInput = ({ ref, ...other }) => {
-  return (
-    <TextField
-      InputProps={{
-        inputRef: ref,
-        ...other,
-      }}
-    />
-  );
-};
+const SearchInput = ({ ref, ...other }) => (
+  <TextField
+    InputProps={{
+      inputRef: ref,
+      ...other,
+    }}
+  />
+);
 
 SearchInput.propTypes = {
   ref: PropTypes.func.isRequired,
