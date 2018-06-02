@@ -5,7 +5,7 @@ import { withRouter } from 'react-router';
 
 import LoadingPage from '../LoadingPage';
 
-import { fetchContainerInfo } from '../../actions/containerInfo';
+import { fetchContainerInfo, getApiPath } from '../../actions/containerInfo';
 
 const mapStateToProps = (state, { match }) => ({
   context: match.params.context,
@@ -39,13 +39,15 @@ class ContainerInfo extends Component {
   }
 
   render() {
-    const { title, namespace, pod, container, containerInfo, children } = this.props;
+    const { title, kubectl, context, namespace, pod, container, info, containerInfo, children } = this.props;
 
     return (
       <LoadingPage
         loading={containerInfo.loading}
         error={containerInfo.error}
         title={title + ': ' + namespace + ' / ' + pod + ' / ' + container}
+        kubectl={kubectl}
+        apiPath={getApiPath(context, namespace, pod, container, info)}
       >
         {children}
       </LoadingPage>
@@ -67,6 +69,7 @@ ContainerInfo.propTypes = {
   context: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   info: PropTypes.string.isRequired,
+  kubectl: PropTypes.object.isRequired,
   namespace: PropTypes.string.isRequired,
   pod: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,

@@ -8,18 +8,27 @@ import { withStyles } from '@material-ui/core/styles';
 
 import Loading from './Loading';
 import Error from './Error';
+import PageMenu from './PageMenu';
 
 const styles = theme => ({
   root: {
     margin: theme.spacing.unit * 3,
     padding: theme.spacing.unit * 2,
   },
+  titleFlex: {
+    display: 'flex',
+  },
   title: {
     marginBottom: theme.spacing.unit,
+    flex: 1,
+  },
+  menuButton: {
+    marginTop: -theme.spacing.unit * 1.5,
+    marginRight: -theme.spacing.unit * 1.5,
   },
 });
 
-const LoadingPage = ({ classes, loading, error, title, children }) => {
+const LoadingPage = ({ classes, loading, error, title, kubectl, apiPath, children }) => {
   if (loading) {
     return <Loading />;
   } else if (error) {
@@ -27,9 +36,12 @@ const LoadingPage = ({ classes, loading, error, title, children }) => {
   } else {
     return (
       <Paper className={classes.root}>
-        <Typography variant="title" className={classes.title}>
-          {title}
-        </Typography>
+        <div className={classes.titleFlex}>
+          <Typography variant="title" className={classes.title}>
+            {title}
+          </Typography>
+          <PageMenu kubectl={kubectl} apiPath={apiPath} className={classes.menuButton} />
+        </div>
         {children}
       </Paper>
     );
@@ -37,11 +49,13 @@ const LoadingPage = ({ classes, loading, error, title, children }) => {
 };
 
 LoadingPage.propTypes = {
+  apiPath: PropTypes.string.isRequired,
   children: PropTypes.node,
   classes: PropTypes.object.isRequired,
   error: PropTypes.shape({
     message: PropTypes.string,
   }),
+  kubectl: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
 };

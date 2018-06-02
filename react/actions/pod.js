@@ -22,8 +22,12 @@ export const fetchPodDescribeError = error => ({
 export function fetchPodDescribe(context, namespace, pod) {
   return dispatch => {
     dispatch(fetchPodDescribeBegin());
-    axios.get('/api/context/' + context + '/namespace/' + namespace + '/pod/' + pod + '/describe')
+    axios.get(getApiPath(context, namespace, pod))
       .then(res => dispatch(fetchPodDescribeSuccess(res.data)))
       .catch(error => dispatch(fetchPodDescribeError(error)));
   };
+}
+
+export function getApiPath(context, namespace, pod) {
+  return '/api/context/' + context + '/namespace/' + namespace + '/pod/' + pod + '/describe';
 }

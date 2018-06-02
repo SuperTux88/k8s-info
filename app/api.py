@@ -140,7 +140,7 @@ def log(context, namespace, pod, container):
 @api.route('/context/<string:context>/namespace/<string:namespace>/pod/<string:pod>/container/<string:container>/ps')
 def ps(context, namespace, pod, container):
     ret = stream(get_client(context).connect_get_namespaced_pod_exec, pod, namespace, container=container,
-                 command=['ps', 'axuwwwH', '-L'], stdout=True)
+                 command=['ps', 'auxwwH'], stdout=True)
 
     return Response(ret, mimetype='text/plain')
 
@@ -149,6 +149,9 @@ def ps(context, namespace, pod, container):
 def env(context, namespace, pod, container):
     ret = stream(get_client(context).connect_get_namespaced_pod_exec, pod, namespace, container=container,
                  command=['printenv'], stdout=True)
+
+    if 'executable file not found' in ret:
+        abort(404)
 
     sorted_env = dict(e.split("=", 1) for e in sorted(filter(None, ret.strip().split('\n'))))
 

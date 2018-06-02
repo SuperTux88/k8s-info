@@ -20,14 +20,17 @@ const styles = theme => ({
   },
 });
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state, { match }) => ({
+  currentPod: match.params.pod,
+  currentContainer: match.params.container,
   containerInfo: state.containerInfo,
 });
 
-const Env = ({ classes, containerInfo }) => (
+const Env = ({ classes, currentPod, currentContainer, containerInfo }) => (
   <ContainerInfo
     info="env"
     title="Environment"
+    kubectl={{ command: 'exec', params: currentPod + ' --container ' + currentContainer + ' printenv' }}
   >
     <Table>
       <TableBody>
@@ -46,6 +49,8 @@ Env.propTypes = {
   containerInfo: PropTypes.shape({
     data: PropTypes.object.isRequired,
   }).isRequired,
+  currentContainer: PropTypes.string.isRequired,
+  currentPod: PropTypes.string.isRequired,
 };
 
 export default withRouter(connect(mapStateToProps)(withStyles(styles)(Env)));

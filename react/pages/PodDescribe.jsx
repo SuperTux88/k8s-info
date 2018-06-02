@@ -19,7 +19,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { withStyles } from '@material-ui/core/styles';
 import { darken } from '@material-ui/core/styles/colorManipulator';
 
-import { fetchPodDescribe } from '../actions/pod';
+import { fetchPodDescribe, getApiPath } from '../actions/pod';
 
 import LoadingPage from '../components/LoadingPage';
 import CompactTableCell from '../components/CompactTableCell';
@@ -331,13 +331,15 @@ class PodDescribe extends Component {
   };
 
   render() {
-    const { currentPod, pod } = this.props;
+    const { currentContext, currentNamespace, currentPod, pod } = this.props;
 
     return (
       <LoadingPage
         loading={pod.loading || !pod.pod}
         error={pod.error}
         title={'Pod details: ' + currentPod}
+        kubectl={{ command: 'describe pod', params: currentPod }}
+        apiPath={getApiPath(currentContext, currentNamespace, currentPod)}
       >
         {pod.pod && this.renderPodDescribe(pod.pod)}
       </LoadingPage>

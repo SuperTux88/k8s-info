@@ -22,8 +22,12 @@ export const fetchPodsError = error => ({
 export function fetchPods(context) {
   return dispatch => {
     dispatch(fetchPodsBegin());
-    axios.get('/api/context/' + context + '/pods')
+    axios.get(getApiPath(context))
       .then(res => dispatch(fetchPodsSuccess(res.data)))
       .catch(error => dispatch(fetchPodsError(error)));
   };
+}
+
+export function getApiPath(context) {
+  return '/api/context/' + context + '/pods';
 }

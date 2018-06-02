@@ -19,11 +19,15 @@ export const fetchContainerInfoError = error => ({
   payload: { error },
 });
 
-export function fetchContainerInfo(context, namespace, pod, container, page) {
+export function fetchContainerInfo(context, namespace, pod, container, info) {
   return dispatch => {
     dispatch(fetchContainerInfoBegin());
-    axios.get('/api/context/' + context + '/namespace/' + namespace + '/pod/' + pod + '/container/' + container + '/' + page)
+    axios.get(getApiPath(context, namespace, pod, container, info))
       .then(res => dispatch(fetchContainerInfoSuccess(res.data || 'No content!')))
       .catch(error => dispatch(fetchContainerInfoError(error)));
   };
+}
+
+export function getApiPath(context, namespace, pod, container, info) {
+  return '/api/context/' + context + '/namespace/' + namespace + '/pod/' + pod + '/container/' + container + '/' + info;
 }

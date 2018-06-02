@@ -16,7 +16,7 @@ import { darken } from '@material-ui/core/styles/colorManipulator';
 
 import get from 'lodash/get';
 
-import { fetchPods } from '../actions/pods';
+import { fetchPods, getApiPath } from '../actions/pods';
 
 import LoadingPage from '../components/LoadingPage';
 import CompactTableCell from '../components/CompactTableCell';
@@ -103,6 +103,8 @@ class PodList extends Component {
         loading={pods.loading}
         error={pods.error}
         title={'Pod list: ' + currentContext + (currentNamespace ? ' / ' + currentNamespace : '')}
+        kubectl={{ command: 'get pods' }}
+        apiPath={getApiPath(currentContext)}
       >
         <div className={classes.root}>
           <Table>
