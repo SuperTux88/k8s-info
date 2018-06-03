@@ -48,7 +48,8 @@ def pods(context):
                     'name': c.name,
                     'ready': c.ready,
                     'restart_count': c.restart_count,
-                    'state': c.state.to_dict()
+                    'state': c.state.to_dict(),
+                    'last_state': c.last_state.to_dict()
                 }, p.status.container_statuses or []))
             }
         })
