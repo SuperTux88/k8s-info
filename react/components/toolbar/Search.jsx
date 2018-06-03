@@ -199,7 +199,7 @@ class Search extends Component {
     if (inputValue.length === 0) {
       return podPrefixes;
     } else {
-      return podPrefixes.filter(prefix => prefix.toLowerCase().startsWith(inputValue));
+      return podPrefixes.filter(prefix => prefix.toLowerCase().includes(inputValue));
     }
   };
 
