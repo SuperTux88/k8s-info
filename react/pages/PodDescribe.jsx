@@ -192,6 +192,9 @@ class PodDescribe extends Component {
                   <ExpansionPanelDetails className={classes.expansionPanelDetails}>
                     <div className={classes.buttons}>
                       <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'log'}>Log</Button>
+                      {Object.keys(containerStatus.last_state).find(key => containerStatus.last_state[key]) &&
+                        <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'log?previous=true'}>Previous log</Button>
+                      }
                       <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'ps'}>Processes</Button>
                       <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'env'}>Env</Button>
                     </div>

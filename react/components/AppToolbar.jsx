@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import qs from 'query-string';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -65,7 +66,7 @@ const mapStateToProps = (state, { match }) => ({
 
 class AppToolbar extends Component {
   handleRefresh = () => {
-    const { currentContext, currentNamespace, currentPod, currentContainer, currentPage, dispatch } = this.props;
+    const { currentContext, currentNamespace, currentPod, currentContainer, currentPage, location, dispatch } = this.props;
 
     dispatch(fetchContexts());
     dispatch(fetchPods(currentContext));
@@ -75,7 +76,11 @@ class AppToolbar extends Component {
     }
 
     if (currentNamespace && currentPod && currentContainer && currentPage) {
-      dispatch(fetchContainerInfo(currentContext, currentNamespace, currentPod, currentContainer, currentPage));
+      let info = currentPage;
+
+      if (info === 'log') info = info + (qs.parse(location.search).previous === 'true' ? '?previous=true' : '');
+
+      dispatch(fetchContainerInfo(currentContext, currentNamespace, currentPod, currentContainer, info));
     }
   };
 
@@ -155,6 +160,7 @@ AppToolbar.propTypes = {
   currentPage: PropTypes.string,
   currentPod: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
+  location: PropTypes.object,
   uiTheme: PropTypes.shape({
     paletteType: PropTypes.string.isRequired,
   }).isRequired,
