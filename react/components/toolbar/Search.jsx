@@ -146,20 +146,31 @@ class Search extends Component {
     const currentPods = pods.items.filter(pod => (!currentNamespace || pod.metadata.namespace === currentNamespace));
 
     const podPrefixes = [...new Set(currentPods.reduce((acc, pod) => {
-      const name = pod.metadata.name;
-      let result = [];
+      let name = pod.metadata.name;
+      if (pod.metadata.owner_references) {
+        const refs = pod.metadata.owner_references;
+        if (refs.filter(ref => ref.kind === 'ReplicaSet').length > 0) {
+          name = name.substring(0, name.lastIndexOf('-', name.lastIndexOf('-') - 1));
+        } else if (refs.filter(ref => ref.kind === 'DaemonSet').length > 0) {
+          name = name.substring(0, name.lastIndexOf('-'));
+        }
+      }
 
-      for (let i = 0; i < name.length; i++) {
+      let result = [];
+      let numberOfResults = currentPods.filter(pod => pod.metadata.name.startsWith(name)).length;
+      result.push(name);
+
+      for (let i = name.length; i > 0; i--) {
         if (name[i] === '-') {
           const prefix = name.slice(0, i);
-          result.push(prefix);
-          if (currentPods.filter(pod => pod.metadata.name.startsWith(prefix)).length === 1) {
-            return acc.concat(result);
+          const prefixNumberOfResults = currentPods.filter(pod => pod.metadata.name.startsWith(prefix)).length;
+          if (prefixNumberOfResults !== numberOfResults) {
+            result.push(prefix);
+            numberOfResults = prefixNumberOfResults;
           }
         }
       }
 
-      result.push(name);
       return acc.concat(result);
     }, []))].sort((a, b) => {
       const levelDiff = a.split('-').length - b.split('-').length;

@@ -40,7 +40,11 @@ def pods(context):
                 'name': p.metadata.name,
                 'creation_timestamp': safe_to_iso_timestamp(p.metadata.creation_timestamp),
                 'age': get_age(p.metadata.creation_timestamp),
-                'deletion_timestamp': safe_to_iso_timestamp(p.metadata.deletion_timestamp)
+                'deletion_timestamp': safe_to_iso_timestamp(p.metadata.deletion_timestamp),
+                'owner_references': list(map(lambda r: {
+                    'kind': r.kind,
+                    'name': r.name
+                }, p.metadata.owner_references)) if p.metadata.owner_references else None
             },
             'status': {
                 'phase': p.status.phase,
