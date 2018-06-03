@@ -28,7 +28,7 @@ const styles = theme => ({
   },
 });
 
-const LoadingPage = ({ classes, loading, error, title, kubectl, apiPath, children }) => {
+const LoadingPage = ({ classes, loading, error, title, kubectl, apiPath, menuItems, children }) => {
   if (loading) {
     return <Loading />;
   } else if (error) {
@@ -40,7 +40,7 @@ const LoadingPage = ({ classes, loading, error, title, kubectl, apiPath, childre
           <Typography variant="title" className={classes.title}>
             {title}
           </Typography>
-          <PageMenu kubectl={kubectl} apiPath={apiPath} className={classes.menuButton} />
+          <PageMenu kubectl={kubectl} apiPath={apiPath} menuItems={menuItems} className={classes.menuButton} />
         </div>
         {children}
       </Paper>
@@ -57,6 +57,7 @@ LoadingPage.propTypes = {
   }),
   kubectl: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
+  menuItems: PropTypes.arrayOf(PropTypes.node),
   title: PropTypes.string.isRequired,
 };
 

@@ -32,7 +32,7 @@ class PageMenu extends Component {
   };
 
   render() {
-    const { kubectl, apiPath, className } = this.props;
+    const { kubectl, apiPath, menuItems, className } = this.props;
     const { anchorEl, commandDialogOpen } = this.state;
 
     return (
@@ -54,6 +54,8 @@ class PageMenu extends Component {
           <MenuItem onClick={this.handleCommandDialogOpen}>
             Copy commands
           </MenuItem>
+
+          {menuItems}
         </Menu>
         <CommandDialog
           kubectl={kubectl}
@@ -70,6 +72,7 @@ PageMenu.propTypes = {
   apiPath: PropTypes.string.isRequired,
   className: PropTypes.string,
   kubectl: PropTypes.object.isRequired,
+  menuItems: PropTypes.arrayOf(PropTypes.node),
 };
 
 export default PageMenu;

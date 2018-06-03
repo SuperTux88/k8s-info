@@ -39,7 +39,7 @@ class ContainerInfo extends Component {
   }
 
   render() {
-    const { title, kubectl, context, namespace, pod, container, info, containerInfo, children } = this.props;
+    const { title, kubectl, context, namespace, pod, container, info, containerInfo, menuItems, children } = this.props;
 
     return (
       <LoadingPage
@@ -48,6 +48,7 @@ class ContainerInfo extends Component {
         title={title + ': ' + namespace + ' / ' + pod + ' / ' + container}
         kubectl={kubectl}
         apiPath={getApiPath(context, namespace, pod, container, info)}
+        menuItems={menuItems}
       >
         {children}
       </LoadingPage>
@@ -70,6 +71,7 @@ ContainerInfo.propTypes = {
   dispatch: PropTypes.func.isRequired,
   info: PropTypes.string.isRequired,
   kubectl: PropTypes.object.isRequired,
+  menuItems: PropTypes.arrayOf(PropTypes.node),
   namespace: PropTypes.string.isRequired,
   pod: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
