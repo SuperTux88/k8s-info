@@ -19,7 +19,8 @@ import get from 'lodash/get';
 import { fetchPods, getApiPath } from '../actions/pods';
 
 import LoadingPage from '../components/LoadingPage';
-import CompactTableCell from '../components/CompactTableCell';
+import CompactTableCell from '../components/elements/CompactTableCell';
+import StatusText from '../components/elements/StatusText';
 
 const styles = theme => ({
   root: {
@@ -52,12 +53,6 @@ const styles = theme => ({
   },
   containerName: {
     flex: 1,
-  },
-  ok: {
-    color: theme.palette.text.ok,
-  },
-  error: {
-    color: theme.palette.text.error,
   },
   button: {
     marginLeft: theme.spacing.unit,
@@ -131,14 +126,14 @@ class PodList extends Component {
                   state = 'Terminating';
                 }
 
-                let stateClassName = state === 'Running' ? classes.ok : (state === 'Failed' ? classes.error : null);
+                let stateType = state === 'Running' ? 'ok' : (state === 'Failed' ? 'error' : null);
                 if (!pod.metadata.deletion_timestamp) {
                   const containerState = [...new Set(containers.map(container => {
                     return container.state[Object.keys(container.state).find(key => container.state[key])].reason;
                   }).filter(Boolean))];
                   if (containerState.length === 1) {
                     state = containerState[0];
-                    stateClassName = state === 'ContainerCreating' ? null : classes.error;
+                    stateType = state === 'ContainerCreating' ? null : 'error';
                   }
                 }
 
@@ -154,34 +149,34 @@ class PodList extends Component {
                     <CompactTableCell numeric>
                       <span>{pod.metadata.age}</span>
                     </CompactTableCell>
-                    <CompactTableCell className={stateClassName}>{state}</CompactTableCell>
+                    <CompactTableCell><StatusText type={stateType}>{state}</StatusText></CompactTableCell>
                     <CompactTableCell>
-                      {containers.map(container => {
-                        const colorClass = container.restart_count === 0 ? classes.ok : classes.error;
-
-                        return (
-                          <div className={[classes.containerInfo, colorClass].join(' ')} key={container.name + '-restarts'}>
-                            {container.restart_count}
-                          </div>
-                        );
-                      })}
+                      {containers.map(container => (
+                        <StatusText
+                          className={classes.containerInfo}
+                          type={container.restart_count === 0 ? 'ok' : 'error'}
+                          key={container.name + '-restarts'}
+                        >
+                          {container.restart_count}
+                        </StatusText>
+                      ))}
                     </CompactTableCell>
                     <CompactTableCell>
                       {containers.map(container => {
                         const linkPrefix = '/' + currentContext + '/' + namespace + '/' + podName + '/' + container.name + '/';
 
-                        const containerClasses = [classes.containerName];
+                        let containerStatus = null;
                         if (container.ready) {
-                          containerClasses.push(classes.ok);
+                          containerStatus = 'ok';
                         } else if (!container.state.running &&
                           get(container.state, 'waiting.reason') !== 'ContainerCreating' &&
                           get(container.state, 'terminated.reason') !== 'Completed') {
-                          containerClasses.push(classes.error);
+                          containerStatus = 'error';
                         }
 
                         return (
                           <div className={classes.containerInfo} key={container.name}>
-                            <div className={containerClasses.join(' ')}>{container.name}</div>
+                            <StatusText className={classes.containerName} type={containerStatus}>{container.name}</StatusText>
                             <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'log'}>Log</Button>
                             <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'ps'}>Processes</Button>
                             <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'env'}>Env</Button>

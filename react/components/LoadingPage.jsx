@@ -6,8 +6,9 @@ import Typography from '@material-ui/core/Typography';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import Loading from './Loading';
-import Error from './Error';
+import Loading from './elements/Loading';
+import Error from './elements/Error';
+
 import PageMenu from './PageMenu';
 
 const styles = theme => ({

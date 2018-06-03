@@ -12,11 +12,9 @@ const styles = theme => ({
   },
 });
 
-const CompactTableCell = ({ classes, className, children, ...props }) => {
-  return (
-    <TableCell {...props} className={[classes.cell, className].join(' ')}>{children}</TableCell>
-  );
-};
+const CompactTableCell = ({ classes, className, children, ...props }) => (
+  <TableCell {...props} className={[classes.cell, className].join(' ')}>{children}</TableCell>
+);
 
 CompactTableCell.propTypes = {
   children: PropTypes.node,

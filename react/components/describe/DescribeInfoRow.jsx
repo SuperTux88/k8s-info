@@ -6,7 +6,7 @@ import TableCell from '@material-ui/core/TableCell';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import CompactTableCell from '../CompactTableCell';
+import CompactTableCell from '../elements/CompactTableCell';
 
 const styles = theme => ({
   row: {
@@ -24,11 +24,11 @@ const styles = theme => ({
   },
 });
 
-const DescribeInfoRow = ({ classes, className, valueClassName, title, children }) => {
+const DescribeInfoRow = ({ classes, className, title, children }) => {
   return (
     <TableRow className={[classes.row, className].join(' ')}>
       <TableCell className={classes.title}>{title}</TableCell>
-      <CompactTableCell className={[classes.value, valueClassName].join(' ')}>{children}</CompactTableCell>
+      <CompactTableCell className={classes.value}>{children}</CompactTableCell>
     </TableRow>
   );
 };
@@ -38,7 +38,6 @@ DescribeInfoRow.propTypes = {
   className: PropTypes.string,
   classes: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
-  valueClassName: PropTypes.string,
 };
 
 export default withStyles(styles)(DescribeInfoRow);

@@ -14,8 +14,9 @@ import ContextIcon from '@material-ui/icons/Storage';
 import { withStyles } from '@material-ui/core/styles';
 
 import K8sLogoHeader from '../components/K8sLogoHeader';
-import Loading from '../components/Loading';
-import Error from '../components/Error';
+
+import Loading from '../components/elements/Loading';
+import Error from '../components/elements/Error';
 
 const styles = {
   root: {

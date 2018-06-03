@@ -9,7 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
-import CopyTextField from './CopyTextField';
+import CopyTextField from './elements/CopyTextField';
 
 const mapStateToProps = (state, { match }) => {
   return ({
