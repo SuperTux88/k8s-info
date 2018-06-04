@@ -17,7 +17,6 @@ import ClearIcon from '@material-ui/icons/Clear';
 import { withStyles } from '@material-ui/core/styles';
 
 import Autosuggest from 'react-autosuggest';
-import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import IsolatedScroll from 'react-isolated-scroll';
 
@@ -55,16 +54,24 @@ const styles = theme => ({
   },
 });
 
+const matchQuery = (text, query) => {
+  const results = [];
+  if (query.length === 0) return results;
+
+  const trimmedQuery = query.trim().toLowerCase();
+  const textLower = text.toLowerCase();
+  const queryLength = trimmedQuery.length;
+  let indexOf = textLower.indexOf(trimmedQuery);
+  while (indexOf > -1) {
+    results.push([indexOf, indexOf + queryLength]);
+    indexOf = textLower.indexOf(query, indexOf + queryLength);
+  }
+  return results;
+};
+
 /* eslint-disable react/no-multi-comp */
 
-const SearchInput = ({ ref, ...other }) => (
-  <TextField
-    InputProps={{
-      inputRef: ref,
-      ...other,
-    }}
-  />
-);
+const SearchInput = ({ ref, ...other }) => <TextField InputProps={{ inputRef: ref, ...other }} />;
 
 SearchInput.propTypes = {
   ref: PropTypes.func.isRequired,
@@ -94,7 +101,7 @@ SuggestionsContainer.propTypes = {
 };
 
 const Suggestion = (suggestion, { query, isHighlighted }) => {
-  const matches = match(suggestion, query);
+  const matches = matchQuery(suggestion, query);
   const parts = parse(suggestion, matches);
 
   return (
@@ -156,9 +163,8 @@ class Search extends Component {
         }
       }
 
-      let result = [];
+      let result = [name];
       let numberOfResults = currentPods.filter(pod => pod.metadata.name.startsWith(name)).length;
-      result.push(name);
 
       for (let i = name.length; i > 0; i--) {
         if (name[i] === '-') {
@@ -192,9 +198,7 @@ class Search extends Component {
   shouldRenderSuggestions = () => true; // render suggestions when input is empty
 
   handleSuggestionsFetchRequested = ({ value }) => {
-    this.setState({
-      suggestions: this.getSuggestions(value),
-    });
+    this.setState({ suggestions: this.getSuggestions(value) });
   };
 
   handleSuggestionsClearRequested = () => {
@@ -253,22 +257,12 @@ class Search extends Component {
           value,
           className: classes.textField,
           onChange: this.handleChange,
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
+          startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment>,
           endAdornment: value || filter
             ? (
-              <InputAdornment
-                position="end"
-                className={classes.clearFilter}
-              >
+              <InputAdornment position="end" className={classes.clearFilter}>
                 <Tooltip id="clear-filter" title="Clear filter" enterDelay={300}>
-                  <IconButton
-                    onClick={this.handleClearFilter}
-                    aria-labelledby="clear-filter"
-                  >
+                  <IconButton onClick={this.handleClearFilter} aria-labelledby="clear-filter">
                     <ClearIcon />
                   </IconButton>
                 </Tooltip>
