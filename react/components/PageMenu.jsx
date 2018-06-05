@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import ContentCopyIcon from '@material-ui/icons/ContentCopy';
-
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 import faTerminal from '@fortawesome/fontawesome-free-solid/faTerminal';
 
