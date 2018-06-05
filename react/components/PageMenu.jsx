@@ -6,6 +6,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import ContentCopyIcon from '@material-ui/icons/ContentCopy';
 
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import faTerminal from '@fortawesome/fontawesome-free-solid/faTerminal';
+
 import CommandDialog from './CommandDialog';
 
 class PageMenu extends Component {
@@ -33,7 +36,7 @@ class PageMenu extends Component {
             aria-labelledby="open-copy-dialog"
             onClick={this.handleCommandDialogOpen}
           >
-            <ContentCopyIcon />
+            <FontAwesomeIcon icon={faTerminal} style={{ width: 24 }} />
           </IconButton>
         </Tooltip>
         <CommandDialog
