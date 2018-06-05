@@ -8,7 +8,6 @@ import qs from 'query-string';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import MenuItem from '@material-ui/core/MenuItem';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -45,11 +44,7 @@ const Log = ({ classes, pods, currentPod, currentContainer, containerInfo, locat
         command: 'logs',
         params: currentPod + ' --container ' + currentContainer + ' --tail 1000' + (previous ? ' --previous' : ''),
       }}
-      menuItems={[
-        <MenuItem key="wrap-switch">
-          <WrapSwitch />
-        </MenuItem>,
-      ]}
+      extraMenu={<WrapSwitch />}
     >
       <AppBar position="static" color="default" component="div" className={classes.tabsBar}>
         <Tabs

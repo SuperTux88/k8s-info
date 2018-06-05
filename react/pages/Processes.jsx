@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
-import MenuItem from '@material-ui/core/MenuItem';
-
 import ContainerInfo from '../components/containerInfo/ContainerInfo';
 import WrapSwitch from '../components/containerInfo/WrapSwitch';
 import TextOutput from '../components/containerInfo/TextOutput';
@@ -20,11 +18,7 @@ const Processes = ({ currentPod, currentContainer, containerInfo }) => (
     info="ps"
     title="Processes"
     kubectl={{ command: 'exec', params: currentPod + ' --container ' + currentContainer + ' ps auxwwH' }}
-    menuItems={[
-      <MenuItem key="wrap-switch">
-        <WrapSwitch />
-      </MenuItem>,
-    ]}
+    extraMenu={<WrapSwitch />}
   >
     <TextOutput>
       {containerInfo.content}
