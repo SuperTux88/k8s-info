@@ -13,10 +13,10 @@ import IconButton from '@material-ui/core/IconButton';
 
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import faLightbulb from '@fortawesome/fontawesome-free-regular/faLightbulb';
-import faLightbulbSolid from '@fortawesome/fontawesome-free-solid/faLightbulb';
-import faGithub from '@fortawesome/fontawesome-free-brands/faGithub';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLightbulb } from '@fortawesome/free-regular-svg-icons/faLightbulb';
+import { faLightbulb as faLightbulbSolid } from '@fortawesome/free-solid-svg-icons/faLightbulb';
+import { faGithub } from '@fortawesome/free-brands-svg-icons/faGithub';
 
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
