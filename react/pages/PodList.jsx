@@ -10,6 +10,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { withStyles } from '@material-ui/core/styles';
 import { darken } from '@material-ui/core/styles/colorManipulator';
@@ -147,7 +148,9 @@ class PodList extends Component {
                       </div>
                     </CompactTableCell>
                     <CompactTableCell numeric>
-                      <span>{pod.metadata.age}</span>
+                      <Tooltip title={pod.metadata.creation_timestamp} placement="top">
+                        <span>{pod.metadata.age}</span>
+                      </Tooltip>
                     </CompactTableCell>
                     <CompactTableCell><StatusText type={stateType}>{state}</StatusText></CompactTableCell>
                     <CompactTableCell>
