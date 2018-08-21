@@ -6,7 +6,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 
-import ContentCopyIcon from '@material-ui/icons/ContentCopy';
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
@@ -31,7 +31,7 @@ class CopyTextField extends Component {
               <Tooltip id={id + '-copy'} title="Copy to clipboard" enterDelay={300}>
                 <CopyToClipboard text={value}>
                   <IconButton aria-labelledby={id + '-copy'}>
-                    <ContentCopyIcon />
+                    <FileCopyOutlinedIcon />
                   </IconButton>
                 </CopyToClipboard>
               </Tooltip>
