@@ -155,13 +155,18 @@ class PodList extends Component {
                     <CompactTableCell><StatusText type={stateType}>{state}</StatusText></CompactTableCell>
                     <CompactTableCell>
                       {containers.map(container => (
-                        <StatusText
-                          className={classes.containerInfo}
-                          type={container.restart_count === 0 ? 'ok' : 'error'}
+                        <Tooltip
+                          title={container.state.running ? container.state.running.started_at : 'Down'}
+                          placement='top'
                           key={container.name + '-restarts'}
                         >
-                          {container.restart_count}
-                        </StatusText>
+                          <StatusText
+                            className={classes.containerInfo}
+                            type={container.restart_count === 0 ? 'ok' : 'error'}
+                          >
+                            {container.restart_count}
+                          </StatusText>
+                        </Tooltip>
                       ))}
                     </CompactTableCell>
                     <CompactTableCell>
