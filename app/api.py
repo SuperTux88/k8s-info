@@ -103,7 +103,7 @@ def describe(context, namespace, pod):
                     'status': c.status,
                     'type': c.type,
                     'last_transition_time': safe_to_iso_timestamp(c.last_transition_time)
-                }, pod_ret.status.conditions)),
+                }, pod_ret.status.conditions or [])),
                 'phase': pod_ret.status.phase,
                 'container_statuses': list(map(lambda c: {
                     'name': c.name,

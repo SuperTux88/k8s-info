@@ -179,32 +179,34 @@ class PodDescribe extends Component {
                     <div style={{ width: '100%' }} className={classes.expansionPanelSummaryContent}>
                       <Typography className={classes.expansionPanelSummaryContentInfo}>{container.name}</Typography>
                       <Typography className={classes.expansionPanelSummaryContentInfo} component="div">
-                        <StatusText type={containerStatus.ready ? 'ok' : (containerStatus.state.running ? null : 'error')}>
-                          {containerStatus.ready ? 'Ready' : 'Not Ready'}
+                        <StatusText type={containerStatus && containerStatus.ready ? 'ok' : (containerStatus && containerStatus.state.running ? null : 'error')}>
+                          {containerStatus && containerStatus.ready ? 'Ready' : 'Not Ready'}
                         </StatusText>
                       </Typography>
                       <Typography className={classes.expansionPanelSummaryContentInfo} component="div">
-                        <StatusText type={containerStatus.restart_count === 0 ? 'ok' : 'error'}>
-                          {containerStatus.restart_count + ' Restarts'}
+                        <StatusText type={containerStatus && containerStatus.restart_count === 0 ? 'ok' : 'error'}>
+                          {containerStatus && containerStatus.restart_count + ' Restarts'}
                         </StatusText>
                       </Typography>
                     </div>
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails className={classes.expansionPanelDetails}>
-                    <div className={classes.buttons}>
-                      <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'log'}>Log</Button>
-                      {Object.keys(containerStatus.last_state).find(key => containerStatus.last_state[key]) &&
-                        <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'log?previous=true'}>Previous log</Button>
-                      }
-                      <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'ps'}>Processes</Button>
-                      <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'env'}>Env</Button>
-                    </div>
+                    {containerStatus &&
+                      <div className={classes.buttons}>
+                        <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'log'}>Log</Button>
+                        {Object.keys(containerStatus.last_state).find(key => containerStatus.last_state[key]) &&
+                          <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'log?previous=true'}>Previous log</Button>
+                        }
+                        <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'ps'}>Processes</Button>
+                        <Button variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'env'}>Env</Button>
+                      </div>
+                    }
                     <div>
                       <Table className={classes.nestedTable}>
                         <TableBody>
-                          <DescribeInfoRow title="Container ID">{containerStatus.container_id}</DescribeInfoRow>
-                          <DescribeInfoRow title="Image">{containerStatus.image}</DescribeInfoRow>
-                          <DescribeInfoRow title="Image ID">{containerStatus.image_id}</DescribeInfoRow>
+                          {containerStatus && <DescribeInfoRow title="Container ID">{containerStatus.container_id}</DescribeInfoRow>}
+                          {containerStatus && <DescribeInfoRow title="Image">{containerStatus.image}</DescribeInfoRow>}
+                          {containerStatus && <DescribeInfoRow title="Image ID">{containerStatus.image_id}</DescribeInfoRow>}
                           {container.ports.length > 0 &&
                             <DescribeInfoRow title="Ports">
                               <Table className={classes.nestedTable}>
@@ -227,8 +229,8 @@ class PodDescribe extends Component {
                               </Table>
                             </DescribeInfoRow>
                           }
-                          <State title="State" state={containerStatus.state} tableClassName={classes.nestedTable} />
-                          <State title="Last State" state={containerStatus.last_state} tableClassName={classes.nestedTable} />
+                          {containerStatus && <State title="State" state={containerStatus.state} tableClassName={classes.nestedTable} />}
+                          {containerStatus && <State title="Last State" state={containerStatus.last_state} tableClassName={classes.nestedTable} />}
                           <Resources title="Requests" resources={container.resources.requests} tableClassName={classes.nestedTable} />
                           <Resources title="Limits" resources={container.resources.limits} tableClassName={classes.nestedTable} />
                           <Probe title="Liveness Probe" probe={container.liveness_probe} tableClassName={classes.nestedTable} />
