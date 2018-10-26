@@ -153,12 +153,12 @@ def ps(context, namespace, pod, container):
 @api.route('/context/<string:context>/namespace/<string:namespace>/pod/<string:pod>/container/<string:container>/env')
 def env(context, namespace, pod, container):
     ret = stream(get_client(context).connect_get_namespaced_pod_exec, pod, namespace, container=container,
-                 command=['printenv'], stdout=True)
+                 command=['printenv', '-0'], stdout=True)
 
     if 'executable file not found' in ret:
         abort(404)
 
-    sorted_env = dict(e.split("=", 1) for e in sorted(filter(None, ret.strip().split('\n'))))
+    sorted_env = dict(e.split("=", 1) for e in sorted(filter(None, ret.strip().split('\0'))))
 
     return jsonify(sorted_env)
 
