@@ -21,6 +21,7 @@ const styles = theme => ({
   },
   pre: {
     fontFamily: ['Roboto Mono', 'monospace'],
+    fontSize: theme.typography.pxToRem(13),
     whiteSpace: 'pre-wrap',
     margin: -theme.spacing.unit / 4,
   },
