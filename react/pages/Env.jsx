@@ -5,6 +5,7 @@ import { withRouter } from 'react-router';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
+import Typography from '@material-ui/core/Typography';
 
 import { withStyles } from '@material-ui/core/styles';
 import { darken } from '@material-ui/core/styles/colorManipulator';
@@ -17,6 +18,11 @@ const styles = theme => ({
     '&:nth-of-type(odd)': {
       backgroundColor: darken(theme.palette.background.paper, 0.1),
     },
+  },
+  pre: {
+    fontFamily: ['Roboto Mono', 'monospace'],
+    whiteSpace: 'pre-wrap',
+    margin: -theme.spacing.unit / 4,
   },
 });
 
@@ -36,7 +42,9 @@ const Env = ({ classes, currentPod, currentContainer, containerInfo }) => (
       <TableBody>
         {Object.keys(containerInfo.data).map(key => (
           <DescribeInfoRow title={key} key={key} className={classes.row}>
-            {containerInfo.data[key]}
+            <Typography component='pre' className={classes.pre}>
+              {containerInfo.data[key]}
+            </Typography>
           </DescribeInfoRow>
         ))}
       </TableBody>
