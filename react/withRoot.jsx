@@ -19,6 +19,9 @@ function getTheme(uiTheme) {
         error: uiTheme.paletteType === 'light' ? red[700] : red[500],
       },
     },
+    typography: {
+      useNextVariants: true,
+    },
   });
 }
 

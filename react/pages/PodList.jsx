@@ -62,6 +62,9 @@ const styles = theme => ({
     paddingTop: theme.spacing.unit / 4,
     paddingBottom: theme.spacing.unit / 4,
   },
+  buttonLabel: {
+    lineHeight: 1.4,
+  },
 });
 
 const mapStateToProps = (state, { match, location }) => ({
@@ -108,9 +111,9 @@ class PodList extends Component {
               <TableRow>
                 <CompactTableCell>Namespace</CompactTableCell>
                 <CompactTableCell>Pod Name</CompactTableCell>
-                <CompactTableCell numeric>Age</CompactTableCell>
+                <CompactTableCell align="right">Age</CompactTableCell>
                 <CompactTableCell>Status</CompactTableCell>
-                <CompactTableCell numeric>Restarts</CompactTableCell>
+                <CompactTableCell align="right">Restarts</CompactTableCell>
                 <CompactTableCell>Containers</CompactTableCell>
               </TableRow>
             </TableHead>
@@ -144,10 +147,10 @@ class PodList extends Component {
                     <CompactTableCell>
                       <div className={classes.podName}>
                         <Link className={classes.podLink} to={podLink}>{podName}</Link>
-                        <Button size="small" variant="outlined" className={classes.button} component={Link} to={podLink}>Describe</Button>
+                        <Button size="small" variant="outlined" classes={{ root: classes.button, label: classes.buttonLabel }} component={Link} to={podLink}>Describe</Button>
                       </div>
                     </CompactTableCell>
-                    <CompactTableCell numeric>
+                    <CompactTableCell align="right">
                       <Tooltip title={pod.metadata.creation_timestamp} placement="top">
                         <span>{pod.metadata.age}</span>
                       </Tooltip>
@@ -185,9 +188,9 @@ class PodList extends Component {
                         return (
                           <div className={classes.containerInfo} key={container.name}>
                             <StatusText className={classes.containerName} type={containerStatus}>{container.name}</StatusText>
-                            <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'log'}>Log</Button>
-                            <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'ps'}>Processes</Button>
-                            <Button size="small" variant="outlined" className={classes.button} component={Link} to={linkPrefix + 'env'}>Env</Button>
+                            <Button size="small" variant="outlined" classes={{ root: classes.button, label: classes.buttonLabel }} component={Link} to={linkPrefix + 'log'}>Log</Button>
+                            <Button size="small" variant="outlined" classes={{ root: classes.button, label: classes.buttonLabel }} component={Link} to={linkPrefix + 'ps'}>Processes</Button>
+                            <Button size="small" variant="outlined" classes={{ root: classes.button, label: classes.buttonLabel }} component={Link} to={linkPrefix + 'env'}>Env</Button>
                           </div>
                         );
                       })}

@@ -38,7 +38,7 @@ const LoadingPage = ({ classes, loading, error, title, kubectl, apiPath, extraMe
     return (
       <Paper className={classes.root}>
         <div className={classes.titleFlex}>
-          <Typography variant="title" className={classes.title}>
+          <Typography variant="h6" className={classes.title}>
             {title}
           </Typography>
           <PageMenu kubectl={kubectl} apiPath={apiPath} extraMenu={extraMenu} className={classes.menuButton} />

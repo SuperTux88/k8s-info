@@ -51,7 +51,7 @@ const Log = ({ classes, pods, currentPod, currentContainer, containerInfo, locat
           value={previous ? 1 : 0}
           indicatorColor="primary"
           textColor="primary"
-          fullWidth
+          variant="fullWidth"
           centered
         >
           <Tab

@@ -95,12 +95,12 @@ class AppToolbar extends Component {
     const { classes, uiTheme } = this.props;
 
     return (
-      <MuiThemeProvider theme={createMuiTheme({ palette: { type: 'dark' } })}>
+      <MuiThemeProvider theme={createMuiTheme({ palette: { type: 'dark' }, typography: { useNextVariants: true } })}>
         <AppBar position="sticky" className={classes.root}>
           <Toolbar>
             <Link to="/" className={classes.link}>
               <img src="/static/images/favicon.png" className={classes.headerLogo} alt="k8s-logo" />
-              <Typography variant="title" color="inherit">
+              <Typography variant="h6" color="inherit">
                 k8s deployments
               </Typography>
             </Link>

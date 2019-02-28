@@ -311,7 +311,7 @@ class PodDescribe extends Component {
                   <TableRow className={classes.nestedTableTitle}>
                     <CompactTableCell>Type</CompactTableCell>
                     <CompactTableCell>Reason</CompactTableCell>
-                    <CompactTableCell numeric>Age</CompactTableCell>
+                    <CompactTableCell align="right">Age</CompactTableCell>
                     <CompactTableCell>From</CompactTableCell>
                     <CompactTableCell>Message</CompactTableCell>
                   </TableRow>
@@ -321,7 +321,7 @@ class PodDescribe extends Component {
                     <TableRow className={classes.nestedTableRow} key={event.reason + event.message}>
                       <CompactTableCell>{event.type}</CompactTableCell>
                       <CompactTableCell>{event.reason}</CompactTableCell>
-                      <CompactTableCell numeric>
+                      <CompactTableCell align="right">
                         <Tooltip title={event.metadata.creation_timestamp} placement="top">
                           <span>{event.metadata.age}</span>
                         </Tooltip>
