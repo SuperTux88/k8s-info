@@ -54,5 +54,10 @@
     "react/require-optimization": "off",
 
     "babel/semi": ["error", "always"]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
   }
 }
